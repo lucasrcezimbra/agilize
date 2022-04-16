@@ -1,0 +1,4 @@
+pre-commit==2.18.1
+pytest==7.1.1
+pytest-mock==3.7.0
+responses==0.20.0

@@ -15,11 +15,6 @@ repos:
   rev: 4.0.1
   hooks:
     - id: flake8
-- repo: https://github.com/PyCQA/bandit
-  rev: 1.7.4
-  hooks:
-    - id: bandit
-      args: [--exclude, tests]
 - repo: https://github.com/timothycrosley/isort
   rev: 5.10.1
   hooks:
