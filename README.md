@@ -14,6 +14,30 @@ pip install agilize
 
 
 ## How to Use
+
+High-level API
+
+```python
+from agilize import Agilize
+
+
+agilize = Agilize(username='11222333000160', password='p4ssw0rd')
+
+
+companies = agilize.companies()
+
+for company in companies:
+    print(company)
+    
+    
+company = companies[0]
+
+for prolabore in company.prolabores(year=2022):
+    print(prolabore)
+```
+
+Low-level API
+
 ```python
 from agilize import Client
 
@@ -25,6 +49,7 @@ company_id = agilize.info['party']['companies'][0]['__identity']
 
 agilize.prolabores(company_id=company_id, year=2022)
 ```
+
 
 
 ## Contributing
