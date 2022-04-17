@@ -7,7 +7,7 @@ README = os.path.join(os.path.dirname(__file__), 'README.md')
 
 if __name__ == "__main__":
     setup(
-        name='Agilize',
+        name='agilize',
         description='Unofficial client to access Agilize',
         version='0.0.1',
         long_description=open(README).read(),
