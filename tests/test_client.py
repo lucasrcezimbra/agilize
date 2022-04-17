@@ -4,7 +4,7 @@ import pytest
 import responses
 from responses import matchers
 
-from agilize.client import Client
+from agilize import Client
 from agilize.keycloak import Keycloak
 
 
