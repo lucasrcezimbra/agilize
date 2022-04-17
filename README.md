@@ -11,7 +11,6 @@ pip install agilize
 
 
 ## How to Use
-~~~~~~~~~~~~~
 ```python
 from agilize import Client
 
@@ -29,8 +28,6 @@ agilize.prolabores(company_id=company_id, year=2022)
 Contributions are welcome, feel free to open an Issue or Pull Request.
 
 Pull requests must be for the `develop` branch.
-
-.. code-block:: bash
 
 ```bash
 git clone https://github.com/lucasrcezimbra/agilize
