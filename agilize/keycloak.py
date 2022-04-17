@@ -8,6 +8,7 @@ def urljoin(p1, p2):
 
 
 class Keycloak:
+    # TODO: add refresh_token
     PATH_TOKEN = "realms/{realm_name}/protocol/openid-connect/token"
 
     def __init__(self, base_url, client_id, realm_name):
