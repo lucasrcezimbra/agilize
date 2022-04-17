@@ -10,6 +10,7 @@ class Client:
 
     URL_API = 'https://app.agilize.com.br/api/v1/'
     PATH_INFO = 'companies/security-user/info'
+    PATH_PROLABORE = 'companies/{company_id}/prolabore-anual?anoReferencia={year}-01-01T00:00:00P'
 
     def __init__(self, username, password, keycloak=None):
         self.username = username
@@ -35,10 +36,21 @@ class Client:
             self._info = response.json()
         return self._info
 
-    def url(self, type):
-        return self.URL_API + self.path(type)
+    def prolabores(self, company_id, year):
+        response = requests.get(
+            url=self.url('prolabores', company_id=company_id, year=year),
+            headers={'Authorization': f'Bearer {self.access_token}'}
+        )
+        return response.json()
 
-    def path(self, type):
-        return {
-            'info': self.PATH_INFO,
+    @classmethod
+    def url(cls, type, **kwargs):
+        return cls.URL_API + cls.path(type, **kwargs)
+
+    @classmethod
+    def path(cls, type, **kwargs):
+        path = {
+            'info': cls.PATH_INFO,
+            'prolabores': cls.PATH_PROLABORE,
         }[type]
+        return path.format(**kwargs)
