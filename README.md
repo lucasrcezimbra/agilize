@@ -1,5 +1,8 @@
 # Agilize
 
+[![PyPI](https://badge.fury.io/py/Agilize.svg)](https://badge.fury.io/py/Agilize)
+[![Coverage Status](https://coveralls.io/repos/github/lucasrcezimbra/agilize/badge.svg?branch=master)](https://coveralls.io/github/lucasrcezimbra/agilize?branch=master)
+
 Unofficial client to access [Agilize](https://www.agilize.com.br/).
 
 
