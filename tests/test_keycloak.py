@@ -32,6 +32,11 @@ def test_url(keycloak):
     assert keycloak.url('token') == keycloak.base_url + keycloak.path('token')
 
 
+def test_url_base_without_slash(keycloak):
+    keycloak.base_url = 'https://sso.agilize.com.br/auth'
+    assert keycloak.url('token') == 'https://sso.agilize.com.br/auth/' + keycloak.path('token')
+
+
 def test_token_call_post(keycloak, mocker):
     post_spy = mocker.patch('requests.Session.post')
 

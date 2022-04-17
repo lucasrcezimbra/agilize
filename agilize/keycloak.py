@@ -1,6 +1,12 @@
 import requests
 
 
+def urljoin(p1, p2):
+    if not p1.endswith('/'):
+        p1 += '/'
+    return p1 + p2
+
+
 class Keycloak:
     PATH_TOKEN = "realms/{realm_name}/protocol/openid-connect/token"
 
@@ -21,7 +27,7 @@ class Keycloak:
         return self.session.post(url, data=payload).json()
 
     def url(self, type):
-        return self.base_url + self.path(type)
+        return urljoin(self.base_url, self.path(type))
 
     def path(self, type):
         return {
