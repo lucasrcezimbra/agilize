@@ -17,7 +17,7 @@ if __name__ == "__main__":
         license="LGPLv2",
         url='https://github.com/lucasrcezimbra/agilize',
         keywords=['agilize', 'api', 'client', 'requests', 'accounting', 'finance'],
-        install_requires=['requests'],
+        install_requires=['attrs', 'requests'],
         packages=['agilize'],
         zip_safe=False,
         include_package_data=True,
