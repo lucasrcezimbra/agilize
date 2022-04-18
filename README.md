@@ -28,8 +28,8 @@ companies = agilize.companies()
 
 for company in companies:
     print(company)
-    
-    
+
+
 company = companies[0]
 
 for prolabore in company.prolabores(year=2022):
