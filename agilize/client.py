@@ -33,18 +33,17 @@ class Client:
     @property
     def info(self):
         if not self._info:
-            response = requests.get(
-                url=self.url('info'),
-                headers={'Authorization': f'Bearer {self.access_token}'}
-            )
+            response = requests.get(url=self.url('info'), headers=self.headers)
             self._info = response.json()
         return self._info
 
+    @property
+    def headers(self):
+        return {'Authorization': f'Bearer {self.access_token}'}
+
     def prolabores(self, company_id, year):
-        response = requests.get(
-            url=self.url('prolabores', company_id=company_id, year=year),
-            headers={'Authorization': f'Bearer {self.access_token}'}
-        )
+        url = self.url('prolabores', company_id=company_id, year=year)
+        response = requests.get(url, headers=self.headers)
         return response.json()
 
     def download_paycheck(self, company_id, partner_id, year, month):
@@ -55,10 +54,7 @@ class Client:
             year=year,
             month=month,
         )
-        response = requests.get(
-            url=url,
-            headers={'Authorization': f'Bearer {self.access_token}'}
-        )
+        response = requests.get(url=url, headers=self.headers)
         return response.content
 
     @classmethod
