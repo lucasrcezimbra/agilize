@@ -186,3 +186,28 @@ def test_prolabores(client, prolabores_data):
     )
 
     assert client.prolabores(company_id, year) == prolabores_data
+
+
+@responses.activate
+def test_download_paycheck(client, prolabores_data):
+    company_id, partner_id, year, month = uuid4(), uuid4(), 2022, 3
+    file = b''
+
+    url = Client.url(
+        'download_paycheck',
+        company_id=company_id,
+        partner_id=partner_id,
+        year=year,
+        month=month,
+    )
+
+    responses.add(
+        responses.GET,
+        url,
+        body=file,
+        match=[
+            matchers.header_matcher({"Authorization": f"Bearer {client.access_token}"})
+        ],
+    )
+
+    assert client.download_paycheck(company_id, partner_id, year, month) == file
