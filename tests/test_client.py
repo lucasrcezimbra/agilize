@@ -211,3 +211,19 @@ def test_download_paycheck(client, prolabores_data):
     )
 
     assert client.download_paycheck(company_id, partner_id, year, month) == file
+
+
+@responses.activate
+def test_partners(client, partners_data):
+    company_id = uuid4()
+
+    responses.add(
+        responses.GET,
+        client.url('partners', company_id=company_id),
+        json=partners_data,
+        match=[
+            matchers.header_matcher({"Authorization": f"Bearer {client.access_token}"})
+        ],
+    )
+
+    assert client.partners(company_id) == partners_data
