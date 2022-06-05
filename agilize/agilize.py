@@ -24,3 +24,14 @@ class Company:
             cnpj=data['cnpj'],
             name=data['name'],
         )
+
+
+@define
+class YearMonth:
+    year: int
+    month: int
+
+    @classmethod
+    def from_data(cls, data):
+        year, month, *_ = data.split('-')
+        return cls(year=int(year), month=int(month))
