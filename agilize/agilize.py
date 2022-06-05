@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from attrs import define
 
 from agilize.client import Client
@@ -35,3 +37,26 @@ class YearMonth:
     def from_data(cls, data):
         year, month, *_ = data.split('-')
         return cls(year=int(year), month=int(month))
+
+
+@define
+class Prolabore:
+    competence: YearMonth
+    inss: Decimal
+    irpf: Decimal
+    net_value: Decimal
+    paycheck_id: str
+    total_value: Decimal
+    client: Client
+
+    @classmethod
+    def from_data(cls, data, client):
+        return cls(
+            competence=YearMonth.from_data(data['competence']),
+            inss=data['iNSS'],
+            irpf=data['iRPJFolha'],
+            net_value=data['valorLiquido'],
+            total_value=data['valor'],
+            paycheck_id=data['contraCheque']['__identity'],
+            client=client,
+        )
