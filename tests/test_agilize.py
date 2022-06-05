@@ -29,4 +29,5 @@ def test_companies(agilize, info_data):
         id=company_data['__identity'],
         cnpj=company_data['cnpj'],
         name=company_data['name'],
+        client=agilize.client,
     )
