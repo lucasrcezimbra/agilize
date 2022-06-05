@@ -32,6 +32,22 @@ class Company:
             client=client,
         )
 
+    def prolabores(self, year):
+        # TODO: create class Prolabores
+        prolabores = []
+        prolabores_data_by_date = self.client.prolabores(self.id, year)
+
+        for prolabores_data in prolabores_data_by_date.values():
+            if not isinstance(prolabores_data, list):
+                continue
+
+            for data in prolabores_data:
+                if not data['contraCheque']:
+                    continue
+                prolabores.append(Prolabore.from_data(data, self.client))
+
+        return prolabores
+
 
 @define
 class YearMonth:
