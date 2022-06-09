@@ -21,7 +21,7 @@ def test_prolabores(company, prolabores_data):
     data = list(prolabores_data.values())[0][0]
     assert prolabores[0] == Prolabore(
         client=company.client,
-        company=company,
+        company_id=company.id,
         competence=Competence.from_data(data['competence']),
         inss=data['iNSS'],
         irpf=data['iRPJFolha'],
