@@ -50,7 +50,7 @@ class Company:
 
 
 @define
-class YearMonth:
+class Competence:
     year: int
     month: int
 
@@ -62,7 +62,7 @@ class YearMonth:
 
 @define
 class Prolabore:
-    competence: YearMonth
+    competence: Competence
     inss: Decimal
     irpf: Decimal
     net_value: Decimal
@@ -73,7 +73,7 @@ class Prolabore:
     @classmethod
     def from_data(cls, data, client):
         return cls(
-            competence=YearMonth.from_data(data['competence']),
+            competence=Competence.from_data(data['competence']),
             inss=data['iNSS'],
             irpf=data['iRPJFolha'],
             net_value=data['valorLiquido'],

@@ -3,7 +3,7 @@ from uuid import uuid4
 import pytest
 
 from agilize import Client
-from agilize.agilize import Company, Prolabore, YearMonth
+from agilize.agilize import Company, Competence, Prolabore
 
 
 @pytest.fixture
@@ -38,7 +38,7 @@ def test_prolabores(company, prolabores_data):
     assert len(prolabores) == 2
     assert prolabores[0] == Prolabore(
         client=company.client,
-        competence=YearMonth.from_data(first['competence']),
+        competence=Competence.from_data(first['competence']),
         inss=first['iNSS'],
         irpf=first['iRPJFolha'],
         net_value=first['valorLiquido'],
@@ -47,7 +47,7 @@ def test_prolabores(company, prolabores_data):
     )
     assert prolabores[1] == Prolabore(
         client=company.client,
-        competence=YearMonth.from_data(second['competence']),
+        competence=Competence.from_data(second['competence']),
         inss=second['iNSS'],
         irpf=second['iRPJFolha'],
         net_value=second['valorLiquido'],
