@@ -44,7 +44,7 @@ class Company:
             for data in prolabores_data:
                 if not data['contraCheque']:
                     continue
-                prolabores.append(Prolabore.from_data(data, self.client))
+                prolabores.append(Prolabore.from_data(data, self))
 
         return prolabores
 
@@ -62,22 +62,34 @@ class Competence:
 
 @define
 class Prolabore:
+    client: Client
+    company: Company
     competence: Competence
     inss: Decimal
     irpf: Decimal
     net_value: Decimal
+    partner_id: str
     paycheck_id: str
     total_value: Decimal
-    client: Client
 
     @classmethod
-    def from_data(cls, data, client):
+    def from_data(cls, data, company):
         return cls(
+            client=company.client,
+            company=company,
             competence=Competence.from_data(data['competence']),
             inss=data['iNSS'],
             irpf=data['iRPJFolha'],
             net_value=data['valorLiquido'],
-            total_value=data['valor'],
+            partner_id=data['partner']['__identity'],
             paycheck_id=data['contraCheque']['__identity'],
-            client=client,
+            total_value=data['valor'],
+        )
+
+    def download(self):
+        return self.client.download_paycheck(
+            self.company.id,
+            self.partner_id,
+            self.competence.year,
+            self.competence.month,
         )

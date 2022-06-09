@@ -2,6 +2,19 @@ from uuid import uuid4
 
 import pytest
 
+from agilize import Client
+from agilize.agilize import Company
+
+
+@pytest.fixture
+def company(faker, mocker):
+    return Company(
+        id=str(uuid4()),
+        cnpj='',
+        name=faker.company(),
+        client=mocker.create_autospec(Client)
+    )
+
 
 @pytest.fixture
 def info_data(faker):
