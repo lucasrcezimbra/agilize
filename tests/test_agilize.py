@@ -1,12 +1,12 @@
 import pytest
 
-from agilize import Agilize, Client
+from agilize import Agilize
 from agilize.agilize import Company
 
 
 @pytest.fixture
-def agilize(mocker):
-    return Agilize('username', 'p4ssw0rd', client=mocker.create_autospec(Client))
+def agilize(client_mock):
+    return Agilize('username', 'p4ssw0rd', client=client_mock)
 
 
 def test_init(mocker):

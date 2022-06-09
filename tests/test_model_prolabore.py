@@ -2,14 +2,13 @@ from uuid import uuid4
 
 import pytest
 
-from agilize import Client
 from agilize.agilize import Competence, Prolabore
 
 
 @pytest.fixture
-def prolabore(faker, mocker):
+def prolabore(faker, client_mock):
     return Prolabore(
-        client=mocker.create_autospec(Client),
+        client=client_mock,
         company_id=str(uuid4()),
         competence=Competence(faker.year(), faker.month()),
         inss=faker.pydecimal(),

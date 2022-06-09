@@ -7,12 +7,17 @@ from agilize.agilize import Company
 
 
 @pytest.fixture
-def company(faker, mocker):
+def client_mock(mocker):
+    return mocker.create_autospec(Client)
+
+
+@pytest.fixture
+def company(faker, client_mock):
     return Company(
         id=str(uuid4()),
         cnpj='',
         name=faker.company(),
-        client=mocker.create_autospec(Client)
+        client=client_mock,
     )
 
 
