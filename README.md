@@ -32,9 +32,12 @@ for company in companies:
 
 company = companies[0]
 
-prolabore = company.prolabores.get(Competence(year=2022, month=6))
+competence = Competence(year=2022, month=5)
+prolabore = company.prolabores.get(competence)
 print(prolabore)
-prolabore.download()
+
+with open(f'./prolabore_{competence}.pdf', 'wb') as f:
+    f.write(file)
 ```
 
 Low-level API
