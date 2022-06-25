@@ -1,4 +1,5 @@
 from decimal import Decimal
+from typing import Optional
 
 from attrs import define, field
 
@@ -14,39 +15,6 @@ class Agilize:
             Company.from_data(c, self.client)
             for c in self.client.info['party']['companies']
         ]
-
-
-@define
-class Company:
-    id: str
-    cnpj: str
-    name: str
-    client: Client
-
-    @classmethod
-    def from_data(cls, data, client):
-        return cls(
-            id=data['__identity'],
-            cnpj=data['cnpj'],
-            name=data['name'],
-            client=client,
-        )
-
-    def prolabores(self, year):
-        # TODO: use class Prolabores
-        prolabores = []
-        prolabores_data_by_date = self.client.prolabores(self.id, year)
-
-        for prolabores_data in prolabores_data_by_date.values():
-            if not isinstance(prolabores_data, list):
-                continue
-
-            for data in prolabores_data:
-                if not data['contraCheque']:
-                    continue
-                prolabores.append(Prolabore.from_data(data, self.id, self.client))
-
-        return prolabores
 
 
 @define(kw_only=True)
@@ -77,6 +45,30 @@ class Prolabores:
 
     def __iter__(self):
         yield from self._prolabores.values()
+
+
+@define
+class Company:
+    id: str
+    cnpj: str
+    name: str
+    client: Client
+    _prolabores: Optional[Prolabores] = None
+
+    @classmethod
+    def from_data(cls, data, client):
+        return cls(
+            id=data['__identity'],
+            cnpj=data['cnpj'],
+            name=data['name'],
+            client=client,
+        )
+
+    @property
+    def prolabores(self):
+        if not self._prolabores:
+            self._prolabores = Prolabores(client=self.client, company_id=self.id)
+        return self._prolabores
 
 
 @define(hash=True)

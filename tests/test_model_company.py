@@ -14,12 +14,12 @@ def test_from_data(company_data):
 
 def test_prolabores(company, prolabores_data):
     company.client.prolabores.return_value = prolabores_data
+    competence = Competence.from_data(list(prolabores_data.keys())[0])
 
-    prolabores = company.prolabores(2022)
+    prolabore = company.prolabores.get(competence)
 
-    assert len(prolabores) == 2
     data = list(prolabores_data.values())[0][0]
-    assert prolabores[0] == Prolabore(
+    assert prolabore == Prolabore(
         client=company.client,
         company_id=company.id,
         competence=Competence.from_data(data['competence']),
@@ -30,21 +30,3 @@ def test_prolabores(company, prolabores_data):
         paycheck_id=data['contraCheque']['__identity'],
         total_value=data['valor'],
     )
-
-
-def test_prolabores_filter_out_data_false(company, prolabores_data):
-    prolabores_data['2022-07-01'] = False
-    company.client.prolabores.return_value = prolabores_data
-
-    prolabores = company.prolabores(2022)
-
-    assert len(prolabores) == 2
-
-
-def test_prolabores_filter_out_without_paycheck(company, prolabores_data):
-    prolabores_data['2022-02-01'][0]['contraCheque'] = None
-    company.client.prolabores.return_value = prolabores_data
-
-    prolabores = company.prolabores(2022)
-
-    assert len(prolabores) == 1
