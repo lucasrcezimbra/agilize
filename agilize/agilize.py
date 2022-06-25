@@ -30,6 +30,7 @@ class Prolabores:
         return self._prolabores[competence]
 
     def fetch(self, year):
+        # TODO: implement multiple partners
         data_by_date = self.client.prolabores(self.company_id, year)
 
         for datas in data_by_date.values():
