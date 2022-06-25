@@ -9,143 +9,6 @@ from agilize.keycloak import Keycloak
 
 
 @pytest.fixture
-def info_data(faker):
-    return {
-        'accountIdentifier': '12345678000160',
-        'creationDate': '2022-04-17T17:11:00-0300',
-        'expirationDate': None,
-        'party': {
-            'companies': [
-                {
-                    'activityType': 1,
-                    'city': {'code': '1234567', 'name': 'Porto Alegre'},
-                    'clientSince': '2022-04-17T17:11:00-0300',
-                    'cnpj': '12345678000160',
-                    'email': faker.email(),
-                    'firstEmail': faker.email(),
-                    'foundingDate': '2022-04-17T17:13:00-0300',
-                    'hasEmployees': False,
-                    'hasFinanceiro': True,
-                    'isAgilizePremium': False,
-                    'isBlocked': False,
-                    'isComercio': False,
-                    'isHabilitadoEmitirNfse': False,
-                    'isLucroPresumido': False,
-                    'isMei': False,
-                    'isOperadoPorProcuracao': False,
-                    'lockedAt': None,
-                    'name': faker.company(),
-                    '__identity': str(uuid4()),
-                }
-            ],
-            'email': faker.email(),
-            'emailIsVerified': True,
-            'name': None,
-            'temporaryEmail': None,
-            '__identity': str(uuid4()),
-        },
-        'roles': {
-            'Agilize.Api:Customer': {
-                'identifier': 'Agilize.Api:Customer',
-                'name': 'Customer',
-            }
-        },
-    }
-
-
-@pytest.fixture
-def prolabores_data(faker):
-    return {
-        "2022-02-01": [
-            {
-                "amountOfDependent": 0,
-                "competence": "2022-02-01T00:00:00-0300",
-                "contraCheque": {"__identity": str(uuid4())},
-                "deducaoDependente": 0,
-                "iNSS": faker.pyfloat(left_digits=3, right_digits=2, positive=True),
-                "iNSSBrl": str(faker.pyfloat(left_digits=3, right_digits=2, positive=True)),
-                "iNSSPatronal": 0,
-                "iNSSPatronalBrl": "0,00",
-                "iNSSTotal": faker.pyfloat(left_digits=3, right_digits=2, positive=True),
-                "iNSSTotalBrl": str(faker.pyfloat(left_digits=3, right_digits=2, positive=True)),
-                "iRPJFolha": 0,
-                "iRPJFolhaBrl": "0,00",
-                "iRRF": False,
-                "iRRFAliquota": 0,
-                "iRRFAliquotaAsPercent": 0,
-                "iRRFBase": faker.pyfloat(left_digits=3, right_digits=2, positive=True),
-                "isAnexoIV": False,
-                "isLucroPresumido": False,
-                "isSimplesNacional": True,
-                "pagamentoProlabore": None,
-                "partner": {"__identity": str(uuid4())},
-                "partnerName": faker.name(),
-                "provisaoINSSPatronal": None,
-                "rubricasDescontos": [],
-                "rubricasProventos": [],
-                "salaryAmount": 0,
-                "saldoInssAPagarAposCompensacoes": faker.pyfloat(
-                    left_digits=3, right_digits=2, positive=True
-                ),
-                "totalCompensacoes": 0,
-                "totalDeImpostos": faker.pyfloat(left_digits=3, right_digits=2, positive=True),
-                "valor": faker.pyint(),
-                "valorBrl": str(faker.pyfloat(left_digits=3, right_digits=2, positive=True)),
-                "valorLiquido": faker.pyfloat(left_digits=3, right_digits=2, positive=True),
-                "valorLiquidoBrl": str(faker.pyfloat(
-                    left_digits=3, right_digits=2, positive=True
-                )),
-                "valorTotalDescontos": 0,
-                "valorTotalProventos": 0,
-            }
-        ],
-        "2022-01-01": [
-            {
-                "amountOfDependent": 0,
-                "competence": "2022-01-01T00:00:00-0300",
-                "contraCheque": {"__identity": str(uuid4())},
-                "deducaoDependente": 0,
-                "iNSS": faker.pyfloat(left_digits=3, right_digits=2, positive=True),
-                "iNSSBrl": str(faker.pyfloat(left_digits=3, right_digits=2, positive=True)),
-                "iNSSPatronal": 0,
-                "iNSSPatronalBrl": "0,00",
-                "iNSSTotal": faker.pyfloat(left_digits=3, right_digits=2, positive=True),
-                "iNSSTotalBrl": str(faker.pyfloat(left_digits=3, right_digits=2, positive=True)),
-                "iRPJFolha": 0,
-                "iRPJFolhaBrl": "0,00",
-                "iRRF": False,
-                "iRRFAliquota": 0,
-                "iRRFAliquotaAsPercent": 0,
-                "iRRFBase": faker.pyfloat(left_digits=3, right_digits=2, positive=True),
-                "isAnexoIV": False,
-                "isLucroPresumido": False,
-                "isSimplesNacional": True,
-                "pagamentoProlabore": None,
-                "partner": {"__identity": str(uuid4())},
-                "partnerName": faker.name(),
-                "provisaoINSSPatronal": None,
-                "rubricasDescontos": [],
-                "rubricasProventos": [],
-                "salaryAmount": 0,
-                "saldoInssAPagarAposCompensacoes": faker.pyfloat(
-                    left_digits=3, right_digits=2, positive=True
-                ),
-                "totalCompensacoes": 0,
-                "totalDeImpostos": faker.pyfloat(left_digits=3, right_digits=2, positive=True),
-                "valor": faker.pyint(),
-                "valorBrl": str(faker.pyfloat(left_digits=3, right_digits=2, positive=True)),
-                "valorLiquido": faker.pyfloat(left_digits=3, right_digits=2, positive=True),
-                "valorLiquidoBrl": str(faker.pyfloat(
-                    left_digits=3, right_digits=2, positive=True
-                )),
-                "valorTotalDescontos": 0,
-                "valorTotalProventos": 0,
-            }
-        ],
-    }
-
-
-@pytest.fixture
 def client(mocker):
     return Client('john', 'p4ssw0rd', keycloak=mocker.create_autospec(Keycloak))
 
@@ -231,3 +94,44 @@ def test_prolabores(client, prolabores_data):
     )
 
     assert client.prolabores(company_id, year) == prolabores_data
+
+
+@responses.activate
+def test_download_paycheck(client, prolabores_data):
+    company_id, partner_id, year, month = uuid4(), uuid4(), 2022, 3
+    file = b''
+
+    url = Client.url(
+        'download_paycheck',
+        company_id=company_id,
+        partner_id=partner_id,
+        year=year,
+        month=month,
+    )
+
+    responses.add(
+        responses.GET,
+        url,
+        body=file,
+        match=[
+            matchers.header_matcher({"Authorization": f"Bearer {client.access_token}"})
+        ],
+    )
+
+    assert client.download_paycheck(company_id, partner_id, year, month) == file
+
+
+@responses.activate
+def test_partners(client, partners_data):
+    company_id = uuid4()
+
+    responses.add(
+        responses.GET,
+        client.url('partners', company_id=company_id),
+        json=partners_data,
+        match=[
+            matchers.header_matcher({"Authorization": f"Bearer {client.access_token}"})
+        ],
+    )
+
+    assert client.partners(company_id) == partners_data
