@@ -1,4 +1,4 @@
-from agilize.agilize import Company, Competence, Prolabore
+from agilize import Company, Competence, Prolabore
 
 
 def test_from_data(company_data):

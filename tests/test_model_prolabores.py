@@ -2,7 +2,7 @@ from uuid import uuid4
 
 import pytest
 
-from agilize.agilize import Competence, Prolabore, Prolabores
+from agilize import Competence, Prolabore, Prolabores
 
 
 @pytest.fixture

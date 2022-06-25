@@ -2,8 +2,7 @@ from uuid import uuid4
 
 import pytest
 
-from agilize import Client
-from agilize.agilize import Company
+from agilize import Client, Company
 
 
 @pytest.fixture

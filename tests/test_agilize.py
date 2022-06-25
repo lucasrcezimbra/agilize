@@ -1,7 +1,6 @@
 import pytest
 
-from agilize import Agilize
-from agilize.agilize import Company
+from agilize import Agilize, Company
 
 
 @pytest.fixture
