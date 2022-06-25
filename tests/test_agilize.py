@@ -1,12 +1,11 @@
 import pytest
 
-from agilize import Agilize, Client
-from agilize.agilize import Company
+from agilize import Agilize, Company
 
 
 @pytest.fixture
-def agilize(mocker):
-    return Agilize('username', 'p4ssw0rd', client=mocker.create_autospec(Client))
+def agilize(client_mock):
+    return Agilize('username', 'p4ssw0rd', client=client_mock)
 
 
 def test_init(mocker):
@@ -29,4 +28,5 @@ def test_companies(agilize, info_data):
         id=company_data['__identity'],
         cnpj=company_data['cnpj'],
         name=company_data['name'],
+        client=agilize.client,
     )

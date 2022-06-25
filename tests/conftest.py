@@ -2,6 +2,23 @@ from uuid import uuid4
 
 import pytest
 
+from agilize import Client, Company
+
+
+@pytest.fixture
+def client_mock(mocker):
+    return mocker.create_autospec(Client)
+
+
+@pytest.fixture
+def company(faker, client_mock):
+    return Company(
+        id=str(uuid4()),
+        cnpj='',
+        name=faker.company(),
+        client=client_mock,
+    )
+
 
 @pytest.fixture
 def info_data(faker):
@@ -170,3 +187,95 @@ def partners_data(faker):
             "__identity": str(uuid4()),
         }
     ]
+
+
+@pytest.fixture
+def prolabores_data(faker):
+    return {
+        "2022-02-01": [
+            {
+                "amountOfDependent": 0,
+                "competence": "2022-02-01T00:00:00-0300",
+                "contraCheque": {"__identity": str(uuid4())},
+                "deducaoDependente": 0,
+                "iNSS": faker.pyfloat(left_digits=3, right_digits=2, positive=True),
+                "iNSSBrl": str(faker.pyfloat(left_digits=3, right_digits=2, positive=True)),
+                "iNSSPatronal": 0,
+                "iNSSPatronalBrl": "0,00",
+                "iNSSTotal": faker.pyfloat(left_digits=3, right_digits=2, positive=True),
+                "iNSSTotalBrl": str(faker.pyfloat(left_digits=3, right_digits=2, positive=True)),
+                "iRPJFolha": 0,
+                "iRPJFolhaBrl": "0,00",
+                "iRRF": False,
+                "iRRFAliquota": 0,
+                "iRRFAliquotaAsPercent": 0,
+                "iRRFBase": faker.pyfloat(left_digits=3, right_digits=2, positive=True),
+                "isAnexoIV": False,
+                "isLucroPresumido": False,
+                "isSimplesNacional": True,
+                "pagamentoProlabore": None,
+                "partner": {"__identity": str(uuid4())},
+                "partnerName": faker.name(),
+                "provisaoINSSPatronal": None,
+                "rubricasDescontos": [],
+                "rubricasProventos": [],
+                "salaryAmount": 0,
+                "saldoInssAPagarAposCompensacoes": faker.pyfloat(
+                    left_digits=3, right_digits=2, positive=True
+                ),
+                "totalCompensacoes": 0,
+                "totalDeImpostos": faker.pyfloat(left_digits=3, right_digits=2, positive=True),
+                "valor": faker.pyint(),
+                "valorBrl": str(faker.pyfloat(left_digits=3, right_digits=2, positive=True)),
+                "valorLiquido": faker.pyfloat(left_digits=3, right_digits=2, positive=True),
+                "valorLiquidoBrl": str(faker.pyfloat(
+                    left_digits=3, right_digits=2, positive=True
+                )),
+                "valorTotalDescontos": 0,
+                "valorTotalProventos": 0,
+            }
+        ],
+        "2022-01-01": [
+            {
+                "amountOfDependent": 0,
+                "competence": "2022-01-01T00:00:00-0300",
+                "contraCheque": {"__identity": str(uuid4())},
+                "deducaoDependente": 0,
+                "iNSS": faker.pyfloat(left_digits=3, right_digits=2, positive=True),
+                "iNSSBrl": str(faker.pyfloat(left_digits=3, right_digits=2, positive=True)),
+                "iNSSPatronal": 0,
+                "iNSSPatronalBrl": "0,00",
+                "iNSSTotal": faker.pyfloat(left_digits=3, right_digits=2, positive=True),
+                "iNSSTotalBrl": str(faker.pyfloat(left_digits=3, right_digits=2, positive=True)),
+                "iRPJFolha": 0,
+                "iRPJFolhaBrl": "0,00",
+                "iRRF": False,
+                "iRRFAliquota": 0,
+                "iRRFAliquotaAsPercent": 0,
+                "iRRFBase": faker.pyfloat(left_digits=3, right_digits=2, positive=True),
+                "isAnexoIV": False,
+                "isLucroPresumido": False,
+                "isSimplesNacional": True,
+                "pagamentoProlabore": None,
+                "partner": {"__identity": str(uuid4())},
+                "partnerName": faker.name(),
+                "provisaoINSSPatronal": None,
+                "rubricasDescontos": [],
+                "rubricasProventos": [],
+                "salaryAmount": 0,
+                "saldoInssAPagarAposCompensacoes": faker.pyfloat(
+                    left_digits=3, right_digits=2, positive=True
+                ),
+                "totalCompensacoes": 0,
+                "totalDeImpostos": faker.pyfloat(left_digits=3, right_digits=2, positive=True),
+                "valor": faker.pyint(),
+                "valorBrl": str(faker.pyfloat(left_digits=3, right_digits=2, positive=True)),
+                "valorLiquido": faker.pyfloat(left_digits=3, right_digits=2, positive=True),
+                "valorLiquidoBrl": str(faker.pyfloat(
+                    left_digits=3, right_digits=2, positive=True
+                )),
+                "valorTotalDescontos": 0,
+                "valorTotalProventos": 0,
+            }
+        ],
+    }

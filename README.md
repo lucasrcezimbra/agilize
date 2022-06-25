@@ -18,7 +18,7 @@ pip install agilize
 High-level API
 
 ```python
-from agilize import Agilize
+from agilize import Agilize, Competence
 
 
 agilize = Agilize(username='11222333000160', password='p4ssw0rd')
@@ -32,8 +32,12 @@ for company in companies:
 
 company = companies[0]
 
-for prolabore in company.prolabores(year=2022):
-    print(prolabore)
+competence = Competence(year=2022, month=5)
+prolabore = company.prolabores.get(competence)
+print(prolabore)
+
+with open(f'./prolabore_{competence}.pdf', 'wb') as f:
+    f.write(prolabore.download())
 ```
 
 Low-level API
