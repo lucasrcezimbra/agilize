@@ -37,7 +37,7 @@ prolabore = company.prolabores.get(competence)
 print(prolabore)
 
 with open(f'./prolabore_{competence}.pdf', 'wb') as f:
-    f.write(file)
+    f.write(prolabore.download())
 ```
 
 Low-level API
