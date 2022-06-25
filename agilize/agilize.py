@@ -81,6 +81,9 @@ class Competence:
         year, month, *_ = data.split('-')
         return cls(year=int(year), month=int(month))
 
+    def __str__(self):
+        return f'{self.year:04d}{self.month:02d}'
+
 
 @define
 class Prolabore:
