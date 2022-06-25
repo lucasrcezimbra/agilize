@@ -1,6 +1,6 @@
 from decimal import Decimal
 
-from attrs import define
+from attrs import define, field
 
 from agilize.client import Client
 
@@ -33,7 +33,7 @@ class Company:
         )
 
     def prolabores(self, year):
-        # TODO: create class Prolabores
+        # TODO: use class Prolabores
         prolabores = []
         prolabores_data_by_date = self.client.prolabores(self.id, year)
 
@@ -49,7 +49,37 @@ class Company:
         return prolabores
 
 
-@define
+@define(kw_only=True)
+class Prolabores:
+    client: Client
+    company_id: str
+    _prolabores: dict = field(factory=dict)
+
+    def get(self, competence):
+        if competence not in self._prolabores:
+            self.fetch(competence.year)
+
+        return self._prolabores[competence]
+
+    def fetch(self, year):
+        data_by_date = self.client.prolabores(self.company_id, year)
+
+        for datas in data_by_date.values():
+            if not isinstance(datas, list):
+                continue
+
+            for d in datas:
+                if not d['contraCheque']:
+                    continue
+
+                prolabore = Prolabore.from_data(d, self.company_id, self.client)
+                self._prolabores[prolabore.competence] = prolabore
+
+    def __iter__(self):
+        yield from self._prolabores.values()
+
+
+@define(hash=True)
 class Competence:
     year: int
     month: int
