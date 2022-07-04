@@ -34,7 +34,7 @@ class Client:
     @property
     def info(self):
         if not self._info:
-            response = requests.get(url=self.url('info'), headers=self.headers)
+            response = requests.get(url=self.url(self.PATH_INFO), headers=self.headers)
             self._info = response.json()
         return self._info
 
@@ -43,18 +43,18 @@ class Client:
         return {'Authorization': f'Bearer {self.access_token}'}
 
     def partners(self, company_id):
-        url = self.url('partners', company_id=company_id)
+        url = self.url(self.PATH_PARTNERS, company_id=company_id)
         response = requests.get(url, headers=self.headers)
         return response.json()
 
     def prolabores(self, company_id, year):
-        url = self.url('prolabores', company_id=company_id, year=year)
+        url = self.url(self.PATH_PROLABORE, company_id=company_id, year=year)
         response = requests.get(url, headers=self.headers)
         return response.json()
 
     def download_paycheck(self, company_id, partner_id, year, month):
         url = self.url(
-            'download_paycheck',
+            self.PATH_DOWNLOAD_PAYCHECK,
             company_id=company_id,
             partner_id=partner_id,
             year=year,
@@ -64,15 +64,5 @@ class Client:
         return response.content
 
     @classmethod
-    def url(cls, type, **kwargs):
-        return cls.URL_API + cls.path(type, **kwargs)
-
-    @classmethod
-    def path(cls, type, **kwargs):
-        path = {
-            'info': cls.PATH_INFO,
-            'prolabores': cls.PATH_PROLABORE,
-            'download_paycheck': cls.PATH_DOWNLOAD_PAYCHECK,
-            'partners': cls.PATH_PARTNERS,
-        }[type]
-        return path.format(**kwargs)
+    def url(cls, path, **kwargs):
+        return cls.URL_API + path.format(**kwargs)
