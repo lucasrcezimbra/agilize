@@ -131,3 +131,31 @@ def test_partners(client, partners_data):
     )
 
     assert client.partners(company_id) == partners_data
+
+
+@responses.activate
+def test_taxes(client, taxes_data):
+    company_id, year = uuid4(), 2022
+
+    responses.add(
+        responses.GET,
+        client.url(Client.PATH_TAXES, company_id=company_id),
+        json=taxes_data,
+        match=[
+            matchers.query_param_matcher(
+                {
+                    'blocking': True,
+                    'closed': True,
+                    'count': 3000,
+                    'direction': 'desc',
+                    'onlyTaxesNotProvisionedByRh': True,
+                    'page': 1,
+                    'sort': 'companyTax.competence',
+                    'year': year,
+                },
+            ),
+            matchers.header_matcher({"Authorization": f"Bearer {client.access_token}"})
+        ],
+    )
+
+    assert client.taxes(company_id, year) == taxes_data
