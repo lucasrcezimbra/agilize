@@ -11,7 +11,7 @@ class Client:
     URL_API = 'https://app.agilize.com.br/api/v1/'
     PATH_INFO = 'companies/security-user/info'
     PATH_PARTNERS = 'companies/{company_id}/partners'
-    PATH_PROLABORE = 'companies/{company_id}/prolabore-anual?anoReferencia={year}-01-01T00:00:00P'
+    PATH_PROLABORE = 'companies/{company_id}/prolabore-anual'
     PATH_DOWNLOAD_PAYCHECK = (
         'companies/{company_id}/prolabore-anual/download'
         '?competence={year}-{month}-01T00:00:00-0300&partner={partner_id}'
@@ -48,8 +48,11 @@ class Client:
         return response.json()
 
     def prolabores(self, company_id, year):
-        url = self.url(self.PATH_PROLABORE, company_id=company_id, year=year)
-        response = requests.get(url, headers=self.headers)
+        response = requests.get(
+            url=self.url(self.PATH_PROLABORE, company_id=company_id),
+            params={'anoReferencia': f'{year}-01-01T00:00:00P'},
+            headers=self.headers,
+        )
         return response.json()
 
     def download_paycheck(self, company_id, partner_id, year, month):

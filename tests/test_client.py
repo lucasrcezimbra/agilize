@@ -47,12 +47,11 @@ def test_url():
 
 
 def test_url_with_params():
-    company_id, year = uuid4(), 2022
+    company_id = uuid4()
 
-    url = Client.url(Client.PATH_PROLABORE, company_id=company_id, year=year)
+    url = Client.url(Client.PATH_PROLABORE, company_id=company_id)
 
-    path = Client.PATH_PROLABORE.format(company_id=company_id, year=year)
-    assert url == (Client.URL_API + path)
+    assert url == (Client.URL_API + f'companies/{company_id}/prolabore-anual')
 
 
 @responses.activate
@@ -85,9 +84,10 @@ def test_prolabores(client, prolabores_data):
 
     responses.add(
         responses.GET,
-        client.url(Client.PATH_PROLABORE, company_id=company_id, year=year),
+        client.url(Client.PATH_PROLABORE, company_id=company_id),
         json=prolabores_data,
         match=[
+            matchers.query_string_matcher(f'anoReferencia={year}-01-01T00:00:00P'),
             matchers.header_matcher({"Authorization": f"Bearer {client.access_token}"})
         ],
     )
