@@ -12,10 +12,7 @@ class Client:
     PATH_INFO = 'companies/security-user/info'
     PATH_PARTNERS = 'companies/{company_id}/partners'
     PATH_PROLABORE = 'companies/{company_id}/prolabore-anual'
-    PATH_DOWNLOAD_PAYCHECK = (
-        'companies/{company_id}/prolabore-anual/download'
-        '?competence={year}-{month}-01T00:00:00-0300&partner={partner_id}'
-    )
+    PATH_DOWNLOAD_PAYCHECK = 'companies/{company_id}/prolabore-anual/download'
 
     def __init__(self, username, password, keycloak=None):
         self.username = username
@@ -56,14 +53,14 @@ class Client:
         return response.json()
 
     def download_paycheck(self, company_id, partner_id, year, month):
-        url = self.url(
-            self.PATH_DOWNLOAD_PAYCHECK,
-            company_id=company_id,
-            partner_id=partner_id,
-            year=year,
-            month=month,
+        response = requests.get(
+            url=self.url(self.PATH_DOWNLOAD_PAYCHECK, company_id=company_id),
+            params={
+                'competence': f'{year}-{month}-01T00:00:00-0300',
+                'partner': partner_id,
+            },
+            headers=self.headers,
         )
-        response = requests.get(url=url, headers=self.headers)
         return response.content
 
     @classmethod
