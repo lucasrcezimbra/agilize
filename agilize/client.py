@@ -32,7 +32,10 @@ class Client:
     @property
     def info(self):
         if not self._info:
-            response = requests.get(url=self.url(self.PATH_INFO), headers=self.headers)
+            response = requests.get(
+                url=self.url(self.PATH_INFO),
+                headers=self.headers,
+            )
             self._info = response.json()
         return self._info
 
@@ -41,8 +44,10 @@ class Client:
         return {'Authorization': f'Bearer {self.access_token}'}
 
     def partners(self, company_id):
-        url = self.url(self.PATH_PARTNERS, company_id=company_id)
-        response = requests.get(url, headers=self.headers)
+        response = requests.get(
+            url=self.url(self.PATH_PARTNERS, company_id=company_id),
+            headers=self.headers,
+        )
         return response.json()
 
     def prolabores(self, company_id, year):
