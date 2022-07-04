@@ -279,3 +279,70 @@ def prolabores_data(faker):
             }
         ],
     }
+
+
+@pytest.fixture
+def taxes_data(faker):
+    return [
+        {
+            'automaticAuditErrorCode': '500',
+            'billet': {'__identity': str(uuid4())},
+            'billetLastUpdate': '2022-07-03T12:34:56-0300',
+            'closed': faker.pybool(),
+            'competence': '2022-06-01T00:00:00-0300',
+            'competenceIntervalDate': {
+                'from': '2022-06-01T00:00:00-0300',
+                'to': '2022-06-30T23:59:59-0300',
+            },
+            'createdBy': None,
+            'deadline': '2022-07-20T23:59:59-0300',
+            'dueTax': faker.pyfloat(left_digits=4, right_digits=2, positive=faker.pybool()),
+            'dueTaxLessThanMinValue': faker.pybool(),
+            'evidence': None,
+            'evidenceLastUpdate': None,
+            'finalPaid': faker.pybool(),
+            'hasCertified': None,
+            'hasHonorarioSucumbencia': faker.pybool(),
+            'interest': None,
+            'isAutomaticRecalculation': faker.pybool(),
+            'lastRecalculationAt': None,
+            'manuallyCreatedReason': None,
+            'needRecalculation': faker.pybool(),
+            'newDeadlineRequest': None,
+            'officialDueValue': faker.pyfloat(
+                left_digits=4, right_digits=2, positive=faker.pybool()
+            ),
+            'officialEvidences': [],
+            'paid': faker.pybool(),
+            'paidAt': None,
+            'penalties': None,
+            'periodRevenue': faker.pyfloat(left_digits=4, right_digits=2, positive=faker.pybool()),
+            'recalculation': faker.pybool(),
+            'releasedToClient': faker.pybool(),
+            'retention': 0,
+            'showTax': faker.pybool(),
+            'status': 1,
+            'tax': {
+                'abbreviation': 'DAS',
+                'disabledAt': None,
+                'friendlyName': None,
+                'name': 'Documento de Arrecadação do Simples Nacional',
+                'slugName': 'DAS',
+                'taxType': 3,
+                '__identity': str(uuid4()),
+            },
+            'taxAbbreviation': 'DAS',
+            'taxMinValueToPay': 10,
+            'taxSlugName': 'DAS',
+            'taxWillAggregatePayment': None,
+            'total': faker.pyfloat(left_digits=4, right_digits=2, positive=faker.pybool()),
+            'underReview': faker.pybool(),
+            'updatedAt': '2022-07-02T13:48:19-0300',
+            'valorFaturamento': 0,
+            'valorImposto': faker.pyfloat(left_digits=4, right_digits=2, positive=faker.pybool()),
+            'valorImpostos': faker.pyfloat(left_digits=4, right_digits=2, positive=faker.pybool()),
+            'valorRetencoes': 0,
+            'wasManuallyCreated': faker.pybool(),
+            '__identity': str(uuid4()),
+        },
+    ]

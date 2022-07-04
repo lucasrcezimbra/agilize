@@ -13,6 +13,7 @@ class Client:
     PATH_PARTNERS = 'companies/{company_id}/partners'
     PATH_PROLABORE = 'companies/{company_id}/prolabore-anual'
     PATH_DOWNLOAD_PAYCHECK = 'companies/{company_id}/prolabore-anual/download'
+    PATH_TAXES = 'companies/{company_id}/taxes'
 
     def __init__(self, username, password, keycloak=None):
         self.username = username
@@ -62,6 +63,23 @@ class Client:
             headers=self.headers,
         )
         return response.content
+
+    def taxes(self, company_id, year):
+        response = requests.get(
+            url=self.url(self.PATH_TAXES, company_id=company_id),
+            params={
+                'blocking': True,
+                'closed': True,
+                'count': 3000,
+                'direction': 'desc',
+                'onlyTaxesNotProvisionedByRh': True,
+                'page': 1,
+                'sort': 'companyTax.competence',
+                'year': year,
+            },
+            headers=self.headers,
+        )
+        return response.json()
 
     @classmethod
     def url(cls, path, **kwargs):
