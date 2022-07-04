@@ -43,16 +43,15 @@ def test_cache_access_token(client):
 
 
 def test_url():
-    assert Client.url('info') == Client.URL_API + Client.path('info')
+    assert Client.url(Client.PATH_INFO) == (Client.URL_API + Client.PATH_INFO)
 
 
-def test_path_prolabores():
+def test_url_with_params():
     company_id, year = uuid4(), 2022
 
-    path = Client.path('prolabores', company_id=company_id, year=year)
-    url = Client.url('prolabores', company_id=company_id, year=year)
+    url = Client.url(Client.PATH_PROLABORE, company_id=company_id, year=year)
 
-    assert path == Client.PATH_PROLABORE.format(company_id=company_id, year=year)
+    path = Client.PATH_PROLABORE.format(company_id=company_id, year=year)
     assert url == (Client.URL_API + path)
 
 
@@ -60,7 +59,7 @@ def test_path_prolabores():
 def test_info(client, info_data):
     responses.add(
         responses.GET,
-        client.url('info'),
+        client.url(Client.PATH_INFO),
         json=info_data,
         match=[
             matchers.header_matcher({"Authorization": f"Bearer {client.access_token}"})
@@ -72,12 +71,12 @@ def test_info(client, info_data):
 
 @responses.activate
 def test_cache_info(client, info_data):
-    responses.add(responses.GET, client.url('info'), json=info_data)
+    responses.add(responses.GET, client.url(Client.PATH_INFO), json=info_data)
 
     client.info
     client.info
 
-    responses.assert_call_count(client.url('info'), 1)
+    responses.assert_call_count(client.url(Client.PATH_INFO), 1)
 
 
 @responses.activate
@@ -86,7 +85,7 @@ def test_prolabores(client, prolabores_data):
 
     responses.add(
         responses.GET,
-        client.url('prolabores', company_id=company_id, year=year),
+        client.url(Client.PATH_PROLABORE, company_id=company_id, year=year),
         json=prolabores_data,
         match=[
             matchers.header_matcher({"Authorization": f"Bearer {client.access_token}"})
@@ -102,7 +101,7 @@ def test_download_paycheck(client, prolabores_data):
     file = b''
 
     url = Client.url(
-        'download_paycheck',
+        Client.PATH_DOWNLOAD_PAYCHECK,
         company_id=company_id,
         partner_id=partner_id,
         year=year,
@@ -127,7 +126,7 @@ def test_partners(client, partners_data):
 
     responses.add(
         responses.GET,
-        client.url('partners', company_id=company_id),
+        client.url(Client.PATH_PARTNERS, company_id=company_id),
         json=partners_data,
         match=[
             matchers.header_matcher({"Authorization": f"Bearer {client.access_token}"})
