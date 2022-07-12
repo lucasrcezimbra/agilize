@@ -1,8 +1,30 @@
+import random
 from uuid import uuid4
 
 import pytest
+from faker.providers.python import Provider as PythonProvider
 
 from agilize import Client, Company
+
+
+class Provider(PythonProvider):
+    def money(self, negative=False):
+        return self.pyfloat(
+            left_digits=random.randint(3, 4),
+            right_digits=2,
+            positive=(not negative),
+        )
+
+
+@pytest.fixture(scope='session', autouse=True)
+def faker_session_locale():
+    return ['pt_BR']
+
+
+@pytest.fixture(autouse=True)
+def faker(faker):
+    faker.add_provider(Provider)
+    return faker
 
 
 @pytest.fixture
@@ -198,18 +220,18 @@ def prolabores_data(faker):
                 "competence": "2022-02-01T00:00:00-0300",
                 "contraCheque": {"__identity": str(uuid4())},
                 "deducaoDependente": 0,
-                "iNSS": faker.pyfloat(left_digits=3, right_digits=2, positive=True),
-                "iNSSBrl": str(faker.pyfloat(left_digits=3, right_digits=2, positive=True)),
+                "iNSS": faker.money(),
+                "iNSSBrl": str(faker.money()),
                 "iNSSPatronal": 0,
                 "iNSSPatronalBrl": "0,00",
-                "iNSSTotal": faker.pyfloat(left_digits=3, right_digits=2, positive=True),
-                "iNSSTotalBrl": str(faker.pyfloat(left_digits=3, right_digits=2, positive=True)),
+                "iNSSTotal": faker.money(),
+                "iNSSTotalBrl": str(faker.money()),
                 "iRPJFolha": 0,
                 "iRPJFolhaBrl": "0,00",
                 "iRRF": False,
                 "iRRFAliquota": 0,
                 "iRRFAliquotaAsPercent": 0,
-                "iRRFBase": faker.pyfloat(left_digits=3, right_digits=2, positive=True),
+                "iRRFBase": faker.money(),
                 "isAnexoIV": False,
                 "isLucroPresumido": False,
                 "isSimplesNacional": True,
@@ -220,17 +242,13 @@ def prolabores_data(faker):
                 "rubricasDescontos": [],
                 "rubricasProventos": [],
                 "salaryAmount": 0,
-                "saldoInssAPagarAposCompensacoes": faker.pyfloat(
-                    left_digits=3, right_digits=2, positive=True
-                ),
+                "saldoInssAPagarAposCompensacoes": faker.money(),
                 "totalCompensacoes": 0,
-                "totalDeImpostos": faker.pyfloat(left_digits=3, right_digits=2, positive=True),
+                "totalDeImpostos": faker.money(),
                 "valor": faker.pyint(),
-                "valorBrl": str(faker.pyfloat(left_digits=3, right_digits=2, positive=True)),
-                "valorLiquido": faker.pyfloat(left_digits=3, right_digits=2, positive=True),
-                "valorLiquidoBrl": str(faker.pyfloat(
-                    left_digits=3, right_digits=2, positive=True
-                )),
+                "valorBrl": str(faker.money()),
+                "valorLiquido": faker.money(),
+                "valorLiquidoBrl": str(faker.money()),
                 "valorTotalDescontos": 0,
                 "valorTotalProventos": 0,
             }
@@ -241,18 +259,18 @@ def prolabores_data(faker):
                 "competence": "2022-01-01T00:00:00-0300",
                 "contraCheque": {"__identity": str(uuid4())},
                 "deducaoDependente": 0,
-                "iNSS": faker.pyfloat(left_digits=3, right_digits=2, positive=True),
-                "iNSSBrl": str(faker.pyfloat(left_digits=3, right_digits=2, positive=True)),
+                "iNSS": faker.money(),
+                "iNSSBrl": str(faker.money()),
                 "iNSSPatronal": 0,
                 "iNSSPatronalBrl": "0,00",
-                "iNSSTotal": faker.pyfloat(left_digits=3, right_digits=2, positive=True),
-                "iNSSTotalBrl": str(faker.pyfloat(left_digits=3, right_digits=2, positive=True)),
+                "iNSSTotal": faker.money(),
+                "iNSSTotalBrl": str(faker.money()),
                 "iRPJFolha": 0,
                 "iRPJFolhaBrl": "0,00",
                 "iRRF": False,
                 "iRRFAliquota": 0,
                 "iRRFAliquotaAsPercent": 0,
-                "iRRFBase": faker.pyfloat(left_digits=3, right_digits=2, positive=True),
+                "iRRFBase": faker.money(),
                 "isAnexoIV": False,
                 "isLucroPresumido": False,
                 "isSimplesNacional": True,
@@ -263,17 +281,13 @@ def prolabores_data(faker):
                 "rubricasDescontos": [],
                 "rubricasProventos": [],
                 "salaryAmount": 0,
-                "saldoInssAPagarAposCompensacoes": faker.pyfloat(
-                    left_digits=3, right_digits=2, positive=True
-                ),
+                "saldoInssAPagarAposCompensacoes": faker.money(),
                 "totalCompensacoes": 0,
-                "totalDeImpostos": faker.pyfloat(left_digits=3, right_digits=2, positive=True),
+                "totalDeImpostos": faker.money(),
                 "valor": faker.pyint(),
-                "valorBrl": str(faker.pyfloat(left_digits=3, right_digits=2, positive=True)),
-                "valorLiquido": faker.pyfloat(left_digits=3, right_digits=2, positive=True),
-                "valorLiquidoBrl": str(faker.pyfloat(
-                    left_digits=3, right_digits=2, positive=True
-                )),
+                "valorBrl": str(faker.money()),
+                "valorLiquido": faker.money(),
+                "valorLiquidoBrl": str(faker.money()),
                 "valorTotalDescontos": 0,
                 "valorTotalProventos": 0,
             }
@@ -296,7 +310,7 @@ def taxes_data(faker):
             },
             'createdBy': None,
             'deadline': '2022-07-20T23:59:59-0300',
-            'dueTax': faker.pyfloat(left_digits=4, right_digits=2, positive=True),
+            'dueTax': faker.money(),
             'dueTaxLessThanMinValue': faker.pybool(),
             'evidence': None,
             'evidenceLastUpdate': None,
@@ -309,12 +323,12 @@ def taxes_data(faker):
             'manuallyCreatedReason': None,
             'needRecalculation': faker.pybool(),
             'newDeadlineRequest': None,
-            'officialDueValue': faker.pyfloat(left_digits=4, right_digits=2, positive=True),
+            'officialDueValue': faker.money(),
             'officialEvidences': [],
             'paid': faker.pybool(),
             'paidAt': None,
             'penalties': None,
-            'periodRevenue': faker.pyfloat(left_digits=4, right_digits=2, positive=True),
+            'periodRevenue': faker.money(),
             'recalculation': faker.pybool(),
             'releasedToClient': faker.pybool(),
             'retention': 0,
@@ -333,12 +347,12 @@ def taxes_data(faker):
             'taxMinValueToPay': 10,
             'taxSlugName': 'DAS',
             'taxWillAggregatePayment': None,
-            'total': faker.pyfloat(left_digits=4, right_digits=2, positive=True),
+            'total': faker.money(),
             'underReview': faker.pybool(),
             'updatedAt': '2022-07-02T13:48:19-0300',
             'valorFaturamento': 0,
-            'valorImposto': faker.pyfloat(left_digits=4, right_digits=2, positive=True),
-            'valorImpostos': faker.pyfloat(left_digits=4, right_digits=2, positive=True),
+            'valorImposto': faker.money(),
+            'valorImpostos': faker.money(),
             'valorRetencoes': 0,
             'wasManuallyCreated': faker.pybool(),
             '__identity': str(uuid4()),
