@@ -14,6 +14,7 @@ class Client:
     PATH_PROLABORE = 'companies/{company_id}/prolabore-anual'
     PATH_DOWNLOAD_PAYCHECK = 'companies/{company_id}/prolabore-anual/download'
     PATH_TAXES = 'companies/{company_id}/taxes'
+    PATH_INVOICES = 'companies/{company_id}/invoices'
 
     def __init__(self, username, password, keycloak=None):
         self.username = username
@@ -80,6 +81,18 @@ class Client:
                 'onlyTaxesNotProvisionedByRh': True,
                 'page': 1,
                 'sort': 'companyTax.competence',
+                'year': year,
+            },
+            headers=self.headers,
+        )
+        return response.json()
+
+    def invoices(self, company_id, year):
+        response = requests.get(
+            url=self.url(self.PATH_INVOICES, company_id=company_id),
+            params={
+                'count': 3000,
+                'page': 1,
                 'year': year,
             },
             headers=self.headers,

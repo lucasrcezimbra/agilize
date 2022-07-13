@@ -159,3 +159,20 @@ def test_taxes(client, taxes_data):
     )
 
     assert client.taxes(company_id, year) == taxes_data
+
+
+@responses.activate
+def test_invoices(client, invoices_data):
+    company_id, year = uuid4(), 2022
+
+    responses.add(
+        responses.GET,
+        client.url(Client.PATH_INVOICES, company_id=company_id),
+        json=invoices_data,
+        match=[
+            matchers.query_param_matcher({'count': 3000, 'page': 1, 'year': year}),
+            matchers.header_matcher({"Authorization": f"Bearer {client.access_token}"})
+        ],
+    )
+
+    assert client.invoices(company_id, year) == invoices_data
