@@ -34,9 +34,10 @@ def test_prolabores(company, prolabores_data):
 
 def test_taxes(company, taxes_data):
     company.client.taxes.return_value = taxes_data
+    abbreviation = taxes_data[0]['taxAbbreviation']
     competence = Competence.from_data(taxes_data[0]['competence'])
 
-    tax = company.taxes.get(competence)
+    tax = company.taxes.get(abbreviation, competence)
 
     data = taxes_data[0]
     assert tax == Tax(

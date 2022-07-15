@@ -1,3 +1,4 @@
+from collections import defaultdict
 from decimal import Decimal
 from typing import Optional
 
@@ -52,24 +53,24 @@ class Prolabores:
 class Taxes:
     client: Client
     company_id: str
-    _taxes: dict = field(factory=dict)
+    _taxes_by_competence: defaultdict = field(factory=lambda: defaultdict(dict))
 
-    def get(self, competence):
-        # TODO: cache by competence and abbreviation
-        if competence not in self._taxes:
+    def get(self, abbreviation, competence):
+        if competence not in self._taxes_by_competence:
             self.fetch(competence.year)
 
-        return self._taxes[competence]
+        return self._taxes_by_competence[competence][abbreviation]
 
     def fetch(self, year):
         data = self.client.taxes(self.company_id, year)
 
         for d in data:
             tax = Tax.from_data(d, self.company_id, self.client)
-            self._taxes[tax.competence] = tax
+            self._taxes_by_competence[tax.competence][tax.abbreviation] = tax
 
     def __iter__(self):
-        yield from self._taxes.values()
+        for t in self._taxes_by_competence.values():
+            yield from t.values()
 
 
 @define

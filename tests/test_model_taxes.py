@@ -17,16 +17,15 @@ def test_init():
 
     assert taxes.client == client
     assert taxes.company_id == company_id
-    assert taxes._taxes == {}
+    assert taxes._taxes_by_competence == {}
 
 
 def test_iter(taxes):
-    tax1 = object
-    tax2 = object
+    tax1, tax2, tax3 = object, object, object
 
-    taxes._taxes = {'1': tax1, '2': tax2}
+    taxes._taxes_by_competence = {'1': {'a': tax1, 'b': tax2}, '2': {'c': tax3}}
 
-    assert list(taxes) == [tax1, tax2]
+    assert list(taxes) == [tax1, tax2, tax3]
 
 
 class TestFetch:
@@ -54,9 +53,10 @@ class TestFetch:
 class TestGet:
     def test_call_client(self, taxes, taxes_data):
         taxes.client.taxes.return_value = taxes_data
+        abbreviation = taxes_data[0]['taxAbbreviation']
         competence = Competence.from_data(taxes_data[0]['competence'])
 
-        taxes.get(competence)
+        taxes.get(abbreviation, competence)
 
         taxes.client.taxes.assert_called_once_with(
             taxes.company_id,
@@ -65,9 +65,10 @@ class TestGet:
 
     def test_cache(self, taxes, taxes_data):
         taxes.client.taxes.return_value = taxes_data
+        abbreviation = taxes_data[0]['taxAbbreviation']
         competence = Competence.from_data(taxes_data[0]['competence'])
 
-        taxes.get(competence)
-        taxes.get(competence)
+        taxes.get(abbreviation, competence)
+        taxes.get(abbreviation, competence)
 
         taxes.client.taxes.assert_called_once()
