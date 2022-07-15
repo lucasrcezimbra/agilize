@@ -72,3 +72,38 @@ class TestGet:
         taxes.get(abbreviation, competence)
 
         taxes.client.taxes.assert_called_once()
+
+
+class TestFilter:
+    def test_filter(self, faker, taxes, taxes_data):
+        data1 = {**taxes_data[0], 'taxAbbreviation': faker.word()}
+        data2 = {**taxes_data[0], 'taxAbbreviation': faker.word()}
+        another_competence = {**taxes_data[0], 'competence': '1901-02-03'}
+
+        taxes.client.taxes.return_value = [data1, data2, another_competence]
+        competence = Competence.from_data(data1['competence'])
+
+        assert taxes.filter(competence) == [
+            Tax.from_data(data1, taxes.company_id, taxes.client),
+            Tax.from_data(data2, taxes.company_id, taxes.client),
+        ]
+
+    def test_call_client(self, taxes, taxes_data):
+        taxes.client.taxes.return_value = taxes_data
+        competence = Competence.from_data(taxes_data[0]['competence'])
+
+        taxes.filter(competence)
+
+        taxes.client.taxes.assert_called_once_with(
+            taxes.company_id,
+            competence.year,
+        )
+
+    def test_cache(self, taxes, taxes_data):
+        taxes.client.taxes.return_value = taxes_data
+        competence = Competence.from_data(taxes_data[0]['competence'])
+
+        taxes.filter(competence)
+        taxes.filter(competence)
+
+        taxes.client.taxes.assert_called_once()

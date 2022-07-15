@@ -68,6 +68,12 @@ class Taxes:
             tax = Tax.from_data(d, self.company_id, self.client)
             self._taxes_by_competence[tax.competence][tax.abbreviation] = tax
 
+    def filter(self, competence):
+        if competence not in self._taxes_by_competence:
+            self.fetch(competence.year)
+
+        return list(self._taxes_by_competence[competence].values())
+
     def __iter__(self):
         for t in self._taxes_by_competence.values():
             yield from t.values()
