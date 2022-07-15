@@ -48,6 +48,29 @@ class Prolabores:
         yield from self._prolabores.values()
 
 
+@define(kw_only=True)
+class Taxes:
+    client: Client
+    company_id: str
+    _taxes: dict = field(factory=dict)
+
+    def get(self, competence):
+        if competence not in self._taxes:
+            self.fetch(competence.year)
+
+        return self._taxes[competence]
+
+    def fetch(self, year):
+        data = self.client.taxes(self.company_id, year)
+
+        for d in data:
+            tax = Tax.from_data(d, self.company_id, self.client)
+            self._taxes[tax.competence] = tax
+
+    def __iter__(self):
+        yield from self._taxes.values()
+
+
 @define
 class Company:
     id: str
@@ -55,6 +78,7 @@ class Company:
     name: str
     client: Client
     _prolabores: Optional[Prolabores] = None
+    _taxes: Optional[Taxes] = None
 
     @classmethod
     def from_data(cls, data, client):
@@ -70,6 +94,12 @@ class Company:
         if not self._prolabores:
             self._prolabores = Prolabores(client=self.client, company_id=self.id)
         return self._prolabores
+
+    @property
+    def taxes(self):
+        if not self._taxes:
+            self._taxes = Taxes(client=self.client, company_id=self.id)
+        return self._taxes
 
 
 @define(hash=True)
@@ -141,26 +171,3 @@ class Tax:
 
     def download(self):
         return self.client.download_tax(self.company_id, self.id)
-
-
-@define(kw_only=True)
-class Taxes:
-    client: Client
-    company_id: str
-    _taxes: dict = field(factory=dict)
-
-    def get(self, competence):
-        if competence not in self._taxes:
-            self.fetch(competence.year)
-
-        return self._taxes[competence]
-
-    def fetch(self, year):
-        data = self.client.taxes(self.company_id, year)
-
-        for d in data:
-            tax = Tax.from_data(d, self.company_id, self.client)
-            self._taxes[tax.competence] = tax
-
-    def __iter__(self):
-        yield from self._taxes.values()
