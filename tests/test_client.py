@@ -43,24 +43,22 @@ def test_cache_access_token(client):
 
 
 def test_url():
-    assert Client.url('info') == Client.URL_API + Client.path('info')
+    assert Client.url(Client.PATH_INFO) == (Client.URL_API + Client.PATH_INFO)
 
 
-def test_path_prolabores():
-    company_id, year = uuid4(), 2022
+def test_url_with_params():
+    company_id = uuid4()
 
-    path = Client.path('prolabores', company_id=company_id, year=year)
-    url = Client.url('prolabores', company_id=company_id, year=year)
+    url = Client.url(Client.PATH_PROLABORE, company_id=company_id)
 
-    assert path == Client.PATH_PROLABORE.format(company_id=company_id, year=year)
-    assert url == (Client.URL_API + path)
+    assert url == (Client.URL_API + f'companies/{company_id}/prolabore-anual')
 
 
 @responses.activate
 def test_info(client, info_data):
     responses.add(
         responses.GET,
-        client.url('info'),
+        client.url(Client.PATH_INFO),
         json=info_data,
         match=[
             matchers.header_matcher({"Authorization": f"Bearer {client.access_token}"})
@@ -72,12 +70,12 @@ def test_info(client, info_data):
 
 @responses.activate
 def test_cache_info(client, info_data):
-    responses.add(responses.GET, client.url('info'), json=info_data)
+    responses.add(responses.GET, client.url(Client.PATH_INFO), json=info_data)
 
     client.info
     client.info
 
-    responses.assert_call_count(client.url('info'), 1)
+    responses.assert_call_count(client.url(Client.PATH_INFO), 1)
 
 
 @responses.activate
@@ -86,9 +84,10 @@ def test_prolabores(client, prolabores_data):
 
     responses.add(
         responses.GET,
-        client.url('prolabores', company_id=company_id, year=year),
+        client.url(Client.PATH_PROLABORE, company_id=company_id),
         json=prolabores_data,
         match=[
+            matchers.query_string_matcher(f'anoReferencia={year}-01-01T00:00:00P'),
             matchers.header_matcher({"Authorization": f"Bearer {client.access_token}"})
         ],
     )
@@ -97,28 +96,25 @@ def test_prolabores(client, prolabores_data):
 
 
 @responses.activate
-def test_download_paycheck(client, prolabores_data):
+def test_download_prolabore(client, prolabores_data):
     company_id, partner_id, year, month = uuid4(), uuid4(), 2022, 3
     file = b''
 
-    url = Client.url(
-        'download_paycheck',
-        company_id=company_id,
-        partner_id=partner_id,
-        year=year,
-        month=month,
-    )
+    url = Client.url(Client.PATH_DOWNLOAD_PROLABORE, company_id=company_id)
 
     responses.add(
         responses.GET,
         url,
         body=file,
         match=[
+            matchers.query_string_matcher(
+                f'competence={year}-{month}-01T00:00:00-0300&partner={partner_id}'
+            ),
             matchers.header_matcher({"Authorization": f"Bearer {client.access_token}"})
         ],
     )
 
-    assert client.download_paycheck(company_id, partner_id, year, month) == file
+    assert client.download_prolabore(company_id, partner_id, year, month) == file
 
 
 @responses.activate
@@ -127,7 +123,7 @@ def test_partners(client, partners_data):
 
     responses.add(
         responses.GET,
-        client.url('partners', company_id=company_id),
+        client.url(Client.PATH_PARTNERS, company_id=company_id),
         json=partners_data,
         match=[
             matchers.header_matcher({"Authorization": f"Bearer {client.access_token}"})
@@ -135,3 +131,69 @@ def test_partners(client, partners_data):
     )
 
     assert client.partners(company_id) == partners_data
+
+
+@responses.activate
+def test_taxes(client, taxes_data):
+    company_id, year = uuid4(), 2022
+
+    responses.add(
+        responses.GET,
+        client.url(Client.PATH_TAXES, company_id=company_id),
+        json=taxes_data,
+        match=[
+            matchers.query_param_matcher(
+                {
+                    'blocking': True,
+                    'closed': True,
+                    'count': 3000,
+                    'direction': 'desc',
+                    'onlyTaxesNotProvisionedByRh': True,
+                    'page': 1,
+                    'sort': 'companyTax.competence',
+                    'year': year,
+                },
+            ),
+            matchers.header_matcher({"Authorization": f"Bearer {client.access_token}"})
+        ],
+    )
+
+    assert client.taxes(company_id, year) == taxes_data
+
+
+@responses.activate
+def test_invoices(client, invoices_data):
+    company_id, year = uuid4(), 2022
+
+    responses.add(
+        responses.GET,
+        client.url(Client.PATH_INVOICES, company_id=company_id),
+        json=invoices_data,
+        match=[
+            matchers.query_param_matcher({'count': 3000, 'page': 1, 'year': year}),
+            matchers.header_matcher({"Authorization": f"Bearer {client.access_token}"})
+        ],
+    )
+
+    assert client.invoices(company_id, year) == invoices_data
+
+
+@responses.activate
+def test_download_tax(client, faker, prolabores_data):
+    company_id, tax_id = uuid4(), uuid4()
+    file_url = faker.url()
+    file = b''
+
+    url = Client.url(Client.PATH_DOWNLOAD_TAX, company_id=company_id, tax_id=tax_id)
+
+    responses.add(
+        responses.GET,
+        url,
+        json={'url': file_url},
+        match=[
+            matchers.header_matcher({"Authorization": f"Bearer {client.access_token}"})
+        ],
+    )
+    responses.add(responses.GET, file_url, body=file)
+
+    assert client.download_tax(company_id, tax_id) == file

@@ -9,13 +9,13 @@ class Client:
     REALM_NAME = 'AgilizeAPPs'
 
     URL_API = 'https://app.agilize.com.br/api/v1/'
+    PATH_DOWNLOAD_PROLABORE = 'companies/{company_id}/prolabore-anual/download'
+    PATH_DOWNLOAD_TAX = 'companies/{company_id}/taxes/{tax_id}/billet'
     PATH_INFO = 'companies/security-user/info'
+    PATH_INVOICES = 'companies/{company_id}/invoices'
     PATH_PARTNERS = 'companies/{company_id}/partners'
-    PATH_PROLABORE = 'companies/{company_id}/prolabore-anual?anoReferencia={year}-01-01T00:00:00P'
-    PATH_DOWNLOAD_PAYCHECK = (
-        'companies/{company_id}/prolabore-anual/download'
-        '?competence={year}-{month}-01T00:00:00-0300&partner={partner_id}'
-    )
+    PATH_PROLABORE = 'companies/{company_id}/prolabore-anual'
+    PATH_TAXES = 'companies/{company_id}/taxes'
 
     def __init__(self, username, password, keycloak=None):
         self.username = username
@@ -34,7 +34,10 @@ class Client:
     @property
     def info(self):
         if not self._info:
-            response = requests.get(url=self.url('info'), headers=self.headers)
+            response = requests.get(
+                url=self.url(self.PATH_INFO),
+                headers=self.headers,
+            )
             self._info = response.json()
         return self._info
 
@@ -43,36 +46,68 @@ class Client:
         return {'Authorization': f'Bearer {self.access_token}'}
 
     def partners(self, company_id):
-        url = self.url('partners', company_id=company_id)
-        response = requests.get(url, headers=self.headers)
+        response = requests.get(
+            url=self.url(self.PATH_PARTNERS, company_id=company_id),
+            headers=self.headers,
+        )
         return response.json()
 
     def prolabores(self, company_id, year):
-        url = self.url('prolabores', company_id=company_id, year=year)
-        response = requests.get(url, headers=self.headers)
+        response = requests.get(
+            url=self.url(self.PATH_PROLABORE, company_id=company_id),
+            params={'anoReferencia': f'{year}-01-01T00:00:00P'},
+            headers=self.headers,
+        )
         return response.json()
 
-    def download_paycheck(self, company_id, partner_id, year, month):
-        url = self.url(
-            'download_paycheck',
-            company_id=company_id,
-            partner_id=partner_id,
-            year=year,
-            month=month,
+    def download_prolabore(self, company_id, partner_id, year, month):
+        response = requests.get(
+            url=self.url(self.PATH_DOWNLOAD_PROLABORE, company_id=company_id),
+            params={
+                'competence': f'{year}-{month}-01T00:00:00-0300',
+                'partner': partner_id,
+            },
+            headers=self.headers,
         )
-        response = requests.get(url=url, headers=self.headers)
         return response.content
 
-    @classmethod
-    def url(cls, type, **kwargs):
-        return cls.URL_API + cls.path(type, **kwargs)
+    def taxes(self, company_id, year):
+        response = requests.get(
+            url=self.url(self.PATH_TAXES, company_id=company_id),
+            params={
+                'blocking': True,
+                'closed': True,
+                'count': 3000,
+                'direction': 'desc',
+                'onlyTaxesNotProvisionedByRh': True,
+                'page': 1,
+                'sort': 'companyTax.competence',
+                'year': year,
+            },
+            headers=self.headers,
+        )
+        return response.json()
+
+    def download_tax(self, company_id, tax_id):
+        response = requests.get(
+            url=self.url(self.PATH_DOWNLOAD_TAX, company_id=company_id, tax_id=tax_id),
+            headers=self.headers,
+        )
+        file_url = response.json()['url']
+        return requests.get(file_url).content
+
+    def invoices(self, company_id, year):
+        response = requests.get(
+            url=self.url(self.PATH_INVOICES, company_id=company_id),
+            params={
+                'count': 3000,
+                'page': 1,
+                'year': year,
+            },
+            headers=self.headers,
+        )
+        return response.json()
 
     @classmethod
-    def path(cls, type, **kwargs):
-        path = {
-            'info': cls.PATH_INFO,
-            'prolabores': cls.PATH_PROLABORE,
-            'download_paycheck': cls.PATH_DOWNLOAD_PAYCHECK,
-            'partners': cls.PATH_PARTNERS,
-        }[type]
-        return path.format(**kwargs)
+    def url(cls, path, **kwargs):
+        return cls.URL_API + path.format(**kwargs)

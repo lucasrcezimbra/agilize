@@ -40,7 +40,7 @@ def test_from_data(prolabores_data):
 def test_download(prolabore):
     prolabore.download()
 
-    prolabore.client.download_paycheck.assert_called_once_with(
+    prolabore.client.download_prolabore.assert_called_once_with(
         prolabore.company_id,
         prolabore.partner_id,
         prolabore.competence.year,

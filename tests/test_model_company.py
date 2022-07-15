@@ -1,4 +1,4 @@
-from agilize import Company, Competence, Prolabore
+from agilize import Company, Competence, Prolabore, Tax
 
 
 def test_from_data(company_data):
@@ -29,4 +29,21 @@ def test_prolabores(company, prolabores_data):
         partner_id=data['partner']['__identity'],
         paycheck_id=data['contraCheque']['__identity'],
         total_value=data['valor'],
+    )
+
+
+def test_taxes(company, taxes_data):
+    company.client.taxes.return_value = taxes_data
+    abbreviation = taxes_data[0]['taxAbbreviation']
+    competence = Competence.from_data(taxes_data[0]['competence'])
+
+    tax = company.taxes.get(abbreviation, competence)
+
+    data = taxes_data[0]
+    assert tax == Tax(
+        abbreviation=data['taxAbbreviation'],
+        client=company.client,
+        company_id=company.id,
+        competence=Competence.from_data(data['competence']),
+        id=data['__identity'],
     )

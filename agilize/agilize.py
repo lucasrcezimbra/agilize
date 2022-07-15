@@ -1,3 +1,4 @@
+from collections import defaultdict
 from decimal import Decimal
 from typing import Optional
 
@@ -48,6 +49,36 @@ class Prolabores:
         yield from self._prolabores.values()
 
 
+@define(kw_only=True)
+class Taxes:
+    client: Client
+    company_id: str
+    _taxes_by_competence: defaultdict = field(factory=lambda: defaultdict(dict))
+
+    def get(self, abbreviation, competence):
+        if competence not in self._taxes_by_competence:
+            self.fetch(competence.year)
+
+        return self._taxes_by_competence[competence][abbreviation]
+
+    def fetch(self, year):
+        data = self.client.taxes(self.company_id, year)
+
+        for d in data:
+            tax = Tax.from_data(d, self.company_id, self.client)
+            self._taxes_by_competence[tax.competence][tax.abbreviation] = tax
+
+    def filter(self, competence):
+        if competence not in self._taxes_by_competence:
+            self.fetch(competence.year)
+
+        return list(self._taxes_by_competence[competence].values())
+
+    def __iter__(self):
+        for t in self._taxes_by_competence.values():
+            yield from t.values()
+
+
 @define
 class Company:
     id: str
@@ -55,6 +86,7 @@ class Company:
     name: str
     client: Client
     _prolabores: Optional[Prolabores] = None
+    _taxes: Optional[Taxes] = None
 
     @classmethod
     def from_data(cls, data, client):
@@ -70,6 +102,12 @@ class Company:
         if not self._prolabores:
             self._prolabores = Prolabores(client=self.client, company_id=self.id)
         return self._prolabores
+
+    @property
+    def taxes(self):
+        if not self._taxes:
+            self._taxes = Taxes(client=self.client, company_id=self.id)
+        return self._taxes
 
 
 @define(hash=True)
@@ -113,9 +151,31 @@ class Prolabore:
         )
 
     def download(self):
-        return self.client.download_paycheck(
+        return self.client.download_prolabore(
             self.company_id,
             self.partner_id,
             self.competence.year,
             self.competence.month,
         )
+
+
+@define
+class Tax:
+    client: Client
+    abbreviation: str
+    company_id: str
+    competence: Competence
+    id: str
+
+    @classmethod
+    def from_data(cls, data, company_id, client):
+        return cls(
+            abbreviation=data['taxAbbreviation'],
+            client=client,
+            company_id=company_id,
+            competence=Competence.from_data(data['competence']),
+            id=data['__identity'],
+        )
+
+    def download(self):
+        return self.client.download_tax(self.company_id, self.id)
