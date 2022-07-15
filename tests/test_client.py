@@ -176,3 +176,24 @@ def test_invoices(client, invoices_data):
     )
 
     assert client.invoices(company_id, year) == invoices_data
+
+
+@responses.activate
+def test_download_tax(client, faker, prolabores_data):
+    company_id, tax_id = uuid4(), uuid4()
+    file_url = faker.url()
+    file = b''
+
+    url = Client.url(Client.PATH_DOWNLOAD_TAX, company_id=company_id, tax_id=tax_id)
+
+    responses.add(
+        responses.GET,
+        url,
+        json={'url': file_url},
+        match=[
+            matchers.header_matcher({"Authorization": f"Bearer {client.access_token}"})
+        ],
+    )
+    responses.add(responses.GET, file_url, body=file)
+
+    assert client.download_tax(company_id, tax_id) == file

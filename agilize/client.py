@@ -10,6 +10,7 @@ class Client:
 
     URL_API = 'https://app.agilize.com.br/api/v1/'
     PATH_DOWNLOAD_PROLABORE = 'companies/{company_id}/prolabore-anual/download'
+    PATH_DOWNLOAD_TAX = 'companies/{company_id}/taxes/{tax_id}/billet'
     PATH_INFO = 'companies/security-user/info'
     PATH_INVOICES = 'companies/{company_id}/invoices'
     PATH_PARTNERS = 'companies/{company_id}/partners'
@@ -86,6 +87,14 @@ class Client:
             headers=self.headers,
         )
         return response.json()
+
+    def download_tax(self, company_id, tax_id):
+        response = requests.get(
+            url=self.url(self.PATH_DOWNLOAD_TAX, company_id=company_id, tax_id=tax_id),
+            headers=self.headers,
+        )
+        file_url = response.json()['url']
+        return requests.get(file_url).content
 
     def invoices(self, company_id, year):
         response = requests.get(
