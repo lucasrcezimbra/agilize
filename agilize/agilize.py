@@ -55,6 +55,7 @@ class Taxes:
     _taxes: dict = field(factory=dict)
 
     def get(self, competence):
+        # TODO: cache by competence and abbreviation
         if competence not in self._taxes:
             self.fetch(competence.year)
 
