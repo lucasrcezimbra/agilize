@@ -141,3 +141,26 @@ class Tax:
 
     def download(self):
         return self.client.download_tax(self.company_id, self.id)
+
+
+@define(kw_only=True)
+class Taxes:
+    client: Client
+    company_id: str
+    _taxes: dict = field(factory=dict)
+
+    def get(self, competence):
+        if competence not in self._taxes:
+            self.fetch(competence.year)
+
+        return self._taxes[competence]
+
+    def fetch(self, year):
+        data = self.client.taxes(self.company_id, year)
+
+        for d in data:
+            tax = Tax.from_data(d, self.company_id, self.client)
+            self._taxes[tax.competence] = tax
+
+    def __iter__(self):
+        yield from self._taxes.values()
