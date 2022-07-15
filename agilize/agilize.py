@@ -119,3 +119,25 @@ class Prolabore:
             self.competence.year,
             self.competence.month,
         )
+
+
+@define
+class Tax:
+    client: Client
+    abbreviation: str
+    company_id: str
+    competence: Competence
+    id: str
+
+    @classmethod
+    def from_data(cls, data, company_id, client):
+        return cls(
+            abbreviation=data['taxAbbreviation'],
+            client=client,
+            company_id=company_id,
+            competence=Competence.from_data(data['competence']),
+            id=data['__identity'],
+        )
+
+    def download(self):
+        return self.client.download_tax(self.company_id, self.id)
