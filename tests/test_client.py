@@ -96,11 +96,11 @@ def test_prolabores(client, prolabores_data):
 
 
 @responses.activate
-def test_download_paycheck(client, prolabores_data):
+def test_download_prolabore(client, prolabores_data):
     company_id, partner_id, year, month = uuid4(), uuid4(), 2022, 3
     file = b''
 
-    url = Client.url(Client.PATH_DOWNLOAD_PAYCHECK, company_id=company_id)
+    url = Client.url(Client.PATH_DOWNLOAD_PROLABORE, company_id=company_id)
 
     responses.add(
         responses.GET,
@@ -114,7 +114,7 @@ def test_download_paycheck(client, prolabores_data):
         ],
     )
 
-    assert client.download_paycheck(company_id, partner_id, year, month) == file
+    assert client.download_prolabore(company_id, partner_id, year, month) == file
 
 
 @responses.activate

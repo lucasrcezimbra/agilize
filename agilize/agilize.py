@@ -113,7 +113,7 @@ class Prolabore:
         )
 
     def download(self):
-        return self.client.download_paycheck(
+        return self.client.download_prolabore(
             self.company_id,
             self.partner_id,
             self.competence.year,

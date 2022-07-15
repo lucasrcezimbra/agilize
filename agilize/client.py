@@ -9,12 +9,12 @@ class Client:
     REALM_NAME = 'AgilizeAPPs'
 
     URL_API = 'https://app.agilize.com.br/api/v1/'
+    PATH_DOWNLOAD_PROLABORE = 'companies/{company_id}/prolabore-anual/download'
     PATH_INFO = 'companies/security-user/info'
+    PATH_INVOICES = 'companies/{company_id}/invoices'
     PATH_PARTNERS = 'companies/{company_id}/partners'
     PATH_PROLABORE = 'companies/{company_id}/prolabore-anual'
-    PATH_DOWNLOAD_PAYCHECK = 'companies/{company_id}/prolabore-anual/download'
     PATH_TAXES = 'companies/{company_id}/taxes'
-    PATH_INVOICES = 'companies/{company_id}/invoices'
 
     def __init__(self, username, password, keycloak=None):
         self.username = username
@@ -59,9 +59,9 @@ class Client:
         )
         return response.json()
 
-    def download_paycheck(self, company_id, partner_id, year, month):
+    def download_prolabore(self, company_id, partner_id, year, month):
         response = requests.get(
-            url=self.url(self.PATH_DOWNLOAD_PAYCHECK, company_id=company_id),
+            url=self.url(self.PATH_DOWNLOAD_PROLABORE, company_id=company_id),
             params={
                 'competence': f'{year}-{month}-01T00:00:00-0300',
                 'partner': partner_id,
