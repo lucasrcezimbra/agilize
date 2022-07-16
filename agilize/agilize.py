@@ -4,7 +4,7 @@ from typing import Optional
 
 from attrs import define, field
 
-from agilize.client import Client
+from agilize.client import AnonymousClient, Client
 
 
 class Agilize:
@@ -179,3 +179,19 @@ class Tax:
 
     def download(self):
         return self.client.download_tax(self.company_id, self.id)
+
+
+@define
+class Invoice:
+    competence: Competence
+    url_nfse: str
+
+    @classmethod
+    def from_data(cls, data):
+        return cls(
+            competence=Competence.from_data(data['competence']),
+            url_nfse=data['nfses'][0]['nfseUrl'],
+        )
+
+    def download_nfse(self):
+        return AnonymousClient.download(self.url_nfse)
