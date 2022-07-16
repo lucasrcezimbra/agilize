@@ -111,3 +111,9 @@ class Client:
     @classmethod
     def url(cls, path, **kwargs):
         return cls.URL_API + path.format(**kwargs)
+
+
+class AnonymousClient:
+    @staticmethod
+    def download(url):
+        return requests.get(url).content
