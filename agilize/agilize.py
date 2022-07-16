@@ -95,6 +95,8 @@ class Invoices:
         data = self.client.invoices(self.company_id, year)
 
         for d in data:
+            if not d['nfses']:
+                continue
             invoice = Invoice.from_data(d)
             self._invoices[invoice.competence] = invoice
 
