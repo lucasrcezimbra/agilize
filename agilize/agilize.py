@@ -226,4 +226,5 @@ class Invoice:
         )
 
     def download_nfse(self):
+        # TODO: https://nfse.salvador.ba.gov.br/site/contribuinte/nota/notaprintimg.aspx?
         return AnonymousClient.download(self.url_nfse)
