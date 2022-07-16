@@ -108,6 +108,7 @@ class Company:
     cnpj: str
     name: str
     client: Client
+    _invoices: Optional[Invoices] = None
     _prolabores: Optional[Prolabores] = None
     _taxes: Optional[Taxes] = None
 
@@ -119,6 +120,12 @@ class Company:
             name=data['name'],
             client=client,
         )
+
+    @property
+    def invoices(self):
+        if not self._invoices:
+            self._invoices = Invoices(client=self.client, company_id=self.id)
+        return self._invoices
 
     @property
     def prolabores(self):
