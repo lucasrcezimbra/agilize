@@ -79,6 +79,29 @@ class Taxes:
             yield from t.values()
 
 
+@define(kw_only=True)
+class Invoices:
+    client: Client
+    company_id: str
+    _invoices: dict = field(factory=dict)
+
+    def get(self, competence):
+        if competence not in self._invoices:
+            self.fetch(competence.year)
+
+        return self._invoices[competence]
+
+    def fetch(self, year):
+        data = self.client.invoices(self.company_id, year)
+
+        for d in data:
+            invoice = Invoice.from_data(d)
+            self._invoices[invoice.competence] = invoice
+
+    def __iter__(self):
+        yield from self._invoices.values()
+
+
 @define
 class Company:
     id: str
