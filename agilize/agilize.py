@@ -225,6 +225,9 @@ class Invoice:
             url_nfse=data['nfses'][0]['nfseUrl'],
         )
 
+    @property
+    def url_nfse_image(self):
+        return self.url_nfse.replace('notaprint.aspx', 'notaprintimg.aspx')
+
     def download_nfse(self):
-        # TODO: https://nfse.salvador.ba.gov.br/site/contribuinte/nota/notaprintimg.aspx?
-        return AnonymousClient.download(self.url_nfse)
+        return AnonymousClient.download(self.url_nfse_image)
