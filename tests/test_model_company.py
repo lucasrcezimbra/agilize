@@ -1,4 +1,4 @@
-from agilize import Company, Competence, Prolabore, Tax
+from agilize import Company, Competence, Invoice, Prolabore, Tax
 
 
 def test_from_data(company_data):
@@ -46,4 +46,17 @@ def test_taxes(company, taxes_data):
         company_id=company.id,
         competence=Competence.from_data(data['competence']),
         id=data['__identity'],
+    )
+
+
+def test_invoices(company, invoices_data):
+    company.client.invoices.return_value = invoices_data
+    data = invoices_data[0]
+    competence = Competence.from_data(data['competence'])
+
+    invoice = company.invoices.get(competence)
+
+    assert invoice == Invoice(
+        competence=competence,
+        url_nfse=data['nfses'][0]['nfseUrl'],
     )
