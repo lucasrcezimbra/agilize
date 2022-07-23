@@ -4,7 +4,7 @@ from typing import Optional
 
 from attrs import define, field
 
-from agilize.client import Client
+from agilize.client import AnonymousClient, Client
 
 
 class Agilize:
@@ -79,12 +79,38 @@ class Taxes:
             yield from t.values()
 
 
+@define(kw_only=True)
+class Invoices:
+    client: Client
+    company_id: str
+    _invoices: dict = field(factory=dict)
+
+    def get(self, competence):
+        if competence not in self._invoices:
+            self.fetch(competence.year)
+
+        return self._invoices[competence]
+
+    def fetch(self, year):
+        data = self.client.invoices(self.company_id, year)
+
+        for d in data:
+            if not d['nfses']:
+                continue
+            invoice = Invoice.from_data(d)
+            self._invoices[invoice.competence] = invoice
+
+    def __iter__(self):
+        yield from self._invoices.values()
+
+
 @define
 class Company:
     id: str
     cnpj: str
     name: str
     client: Client
+    _invoices: Optional[Invoices] = None
     _prolabores: Optional[Prolabores] = None
     _taxes: Optional[Taxes] = None
 
@@ -96,6 +122,12 @@ class Company:
             name=data['name'],
             client=client,
         )
+
+    @property
+    def invoices(self):
+        if not self._invoices:
+            self._invoices = Invoices(client=self.client, company_id=self.id)
+        return self._invoices
 
     @property
     def prolabores(self):
@@ -179,3 +211,23 @@ class Tax:
 
     def download(self):
         return self.client.download_tax(self.company_id, self.id)
+
+
+@define
+class Invoice:
+    competence: Competence
+    url_nfse: str
+
+    @classmethod
+    def from_data(cls, data):
+        return cls(
+            competence=Competence.from_data(data['competence']),
+            url_nfse=data['nfses'][0]['nfseUrl'],
+        )
+
+    @property
+    def url_nfse_image(self):
+        return self.url_nfse.replace('notaprint.aspx', 'notaprintimg.aspx')
+
+    def download_nfse(self):
+        return AnonymousClient.download(self.url_nfse_image)

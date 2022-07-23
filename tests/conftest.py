@@ -445,7 +445,12 @@ def invoices_data(faker):
                     'naturezaOperacao': 1,
                     'nfseAuthUrl': faker.url(),
                     'nfseKey': faker.pystr(),
-                    'nfseUrl': faker.url(),
+                    'nfseUrl': (
+                        'https://nfse.salvador.ba.gov.br/site/contribuinte/nota/notaprint.aspx'
+                        f'?nf={faker.pyint()}'
+                        f'&inscricao={faker.pyint()}'
+                        f'&verificacao={faker.pystr()}'
+                    ),
                     'numero': str(faker.pyint()),
                     'numeroAndSerieDescription': f'{faker.pyint()} (Série: )',
                     'numeroSerie': str(faker.pyint()),

@@ -3,7 +3,13 @@ import requests
 from agilize.keycloak import Keycloak
 
 
-class Client:
+class AnonymousClient:
+    @staticmethod
+    def download(url):
+        return requests.get(url).content
+
+
+class Client(AnonymousClient):
     AUTH_URL = 'https://sso.agilize.com.br/auth/'
     CLIENT_ID = 'agilize-legacy-client'
     REALM_NAME = 'AgilizeAPPs'
@@ -93,8 +99,7 @@ class Client:
             url=self.url(self.PATH_DOWNLOAD_TAX, company_id=company_id, tax_id=tax_id),
             headers=self.headers,
         )
-        file_url = response.json()['url']
-        return requests.get(file_url).content
+        return self.download(response.json()['url'])
 
     def invoices(self, company_id, year):
         response = requests.get(

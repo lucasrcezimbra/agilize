@@ -1,3 +1,3 @@
-from agilize.agilize import (Agilize, Company, Competence, Prolabore,  # noqa
-                             Prolabores, Tax, Taxes)
+from agilize.agilize import (Agilize, Company, Competence, Invoice,  # noqa
+                             Invoices, Prolabore, Prolabores, Tax, Taxes)
 from agilize.client import Client  # noqa
