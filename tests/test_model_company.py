@@ -60,3 +60,14 @@ def test_invoices(company, invoices_data):
         competence=competence,
         url_nfse=data['nfses'][0]['nfseUrl'],
     )
+
+
+def test_upload_nfse(company):
+    count = 1
+    company.client.upload_nfse.return_value = {
+        'countNfses': count,
+        'createdAt': '2022-10-29T14:40:00-0300',
+        'nfses': [],
+    }
+
+    assert company.upload_nfse(b'') == count

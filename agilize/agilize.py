@@ -141,6 +141,10 @@ class Company:
             self._taxes = Taxes(client=self.client, company_id=self.id)
         return self._taxes
 
+    def upload_nfse(self, filebytes):
+        data = self.client.upload_nfse(self.id, filebytes)
+        return data['countNfses']
+
 
 @define(hash=True)
 class Competence:

@@ -22,6 +22,8 @@ class Client(AnonymousClient):
     PATH_PARTNERS = 'companies/{company_id}/partners'
     PATH_PROLABORE = 'companies/{company_id}/prolabore-anual'
     PATH_TAXES = 'companies/{company_id}/taxes'
+    PATH_UPLOAD_NFSE = 'companies/{company_id}/nfseimportresources'
+    PATH_UPLOAD_NFSE2 = 'companies/{company_id}/nfses/importfromresource'
 
     def __init__(self, username, password, keycloak=None):
         self.username = username
@@ -112,6 +114,19 @@ class Client(AnonymousClient):
             headers=self.headers,
         )
         return response.json()
+
+    def upload_nfse(self, company_id, filebytes):
+        response = requests.post(
+            url=self.url(self.PATH_UPLOAD_NFSE, company_id=company_id),
+            files={'resources[0]': filebytes},
+            headers=self.headers,
+        )
+        response2 = requests.post(
+            url=self.url(self.PATH_UPLOAD_NFSE2, company_id=company_id),
+            json={'nfseImportResource': response.json()['__identity']},
+            headers=self.headers,
+        )
+        return response2.json()
 
     @classmethod
     def url(cls, path, **kwargs):

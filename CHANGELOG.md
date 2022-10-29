@@ -1,6 +1,11 @@
 # Changelog
 
 
+## 0.0.6 (2022-10-29)
+- Enable NFSE upload - Agilize.upload_nfse and Client.upload_nfse
+- Update dev requirements
+
+
 ## 0.0.5 (2022-07-23)
 - Download invoices NFSE
 - Update dev dependencies
