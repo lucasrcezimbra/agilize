@@ -197,3 +197,39 @@ def test_download_tax(client, faker, prolabores_data):
     responses.add(responses.GET, file_url, body=file)
 
     assert client.download_tax(company_id, tax_id) == file
+
+
+@responses.activate
+def test_upload_invoice(client, faker):
+    company_id = uuid4()
+    file = b''
+    file_identity = str(uuid4())
+    expected_response = {
+        'countNfses': 1,
+        'createdAt': '2022-10-29T14:40:00-0300',
+        'nfses': [],
+    }
+
+    url1 = Client.url(Client.PATH_UPLOAD_NFSE, company_id=company_id)
+    url2 = Client.url(Client.PATH_UPLOAD_NFSE2, company_id=company_id)
+
+    responses.add(
+        responses.POST,
+        url1,
+        json={'__identity': file_identity},
+        match=[
+            matchers.header_matcher({"Authorization": f"Bearer {client.access_token}"}),
+            matchers.multipart_matcher({'resources[0]': file}),
+        ],
+    )
+    responses.add(
+        responses.POST,
+        url2,
+        json=expected_response,
+        match=[
+            matchers.header_matcher({"Authorization": f"Bearer {client.access_token}"}),
+            matchers.json_params_matcher({"nfseImportResource": file_identity}),
+        ],
+    )
+
+    assert client.upload_nfse(company_id, file) == expected_response
