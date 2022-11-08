@@ -178,12 +178,12 @@ class Prolabore:
             client=client,
             company_id=company_id,
             competence=Competence.from_data(data['competence']),
-            inss=data['iNSS'],
-            irpf=data['iRPJFolha'],
-            net_value=data['valorLiquido'],
+            inss=Decimal(str(data['iNSS'])),
+            irpf=Decimal(str(data['iRPJFolha'])),
+            net_value=Decimal(str(data['valorLiquido'])),
             partner_id=data['partner']['__identity'],
             paycheck_id=data['contraCheque']['__identity'],
-            total_value=data['valor'],
+            total_value=Decimal(str(data['valor'])),
         )
 
     def download(self):
