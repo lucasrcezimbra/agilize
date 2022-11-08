@@ -40,3 +40,11 @@ def test_first_date():
     assert Competence(2022, 5).first_date == date(2022, 5, 1)
     assert Competence(2000, 12).first_date == date(2000, 12, 1)
     assert Competence(2123, 1).first_date == date(2123, 1, 1)
+
+
+def test_last_date():
+    assert Competence(2022, 5).last_date == date(2022, 5, 31)
+    assert Competence(2000, 12).last_date == date(2000, 12, 31)
+    assert Competence(2123, 1).last_date == date(2123, 1, 31)
+    assert Competence(2022, 2).last_date == date(2022, 2, 28)
+    assert Competence(2020, 2).last_date == date(2020, 2, 29)

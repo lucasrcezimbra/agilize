@@ -1,3 +1,4 @@
+import calendar
 from collections import defaultdict
 from datetime import date
 from decimal import Decimal
@@ -164,6 +165,11 @@ class Competence:
     @property
     def first_date(self):
         return date(self.year, self.month, 1)
+
+    @property
+    def last_date(self):
+        _, last_day = calendar.monthrange(self.year, self.month)
+        return date(self.year, self.month, last_day)
 
     def __str__(self):
         return f'{self.year:04d}{self.month:02d}'
