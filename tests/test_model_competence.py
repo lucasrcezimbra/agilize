@@ -1,3 +1,5 @@
+from datetime import date
+
 from agilize import Competence
 
 
@@ -26,3 +28,9 @@ def test_str():
     assert str(Competence(2022, 5)) == '202205'
     assert str(Competence(2000, 12)) == '200012'
     assert str(Competence(2123, 1)) == '212301'
+
+
+def test_first_date():
+    assert Competence(2022, 5).first_date == date(2022, 5, 1)
+    assert Competence(2000, 12).first_date == date(2000, 12, 1)
+    assert Competence(2123, 1).first_date == date(2123, 1, 1)

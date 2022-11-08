@@ -1,4 +1,5 @@
 from collections import defaultdict
+from datetime import date
 from decimal import Decimal
 from typing import Optional
 
@@ -155,6 +156,10 @@ class Competence:
     def from_data(cls, data):
         year, month, *_ = data.split('-')
         return cls(year=int(year), month=int(month))
+
+    @property
+    def first_date(self):
+        return date(self.year, self.month, 1)
 
     def __str__(self):
         return f'{self.year:04d}{self.month:02d}'
