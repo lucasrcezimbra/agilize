@@ -1,4 +1,6 @@
+import calendar
 from collections import defaultdict
+from datetime import date, timedelta
 from decimal import Decimal
 from typing import Optional
 
@@ -148,13 +150,34 @@ class Company:
 
 @define(hash=True)
 class Competence:
-    year: int
-    month: int
+    year: int = field(converter=int)
+    month: int = field(converter=int)
 
     @classmethod
     def from_data(cls, data):
         year, month, *_ = data.split('-')
-        return cls(year=int(year), month=int(month))
+        return cls(int(year), int(month))
+
+    @classmethod
+    def from_date(cls, date):
+        return cls(date.year, date.month)
+
+    @property
+    def first_date(self):
+        return date(self.year, self.month, 1)
+
+    @property
+    def last_date(self):
+        _, last_day = calendar.monthrange(self.year, self.month)
+        return date(self.year, self.month, last_day)
+
+    @property
+    def next(self):
+        return self.from_date(self.last_date + timedelta(days=1))
+
+    @property
+    def previous(self):
+        return self.from_date(self.first_date - timedelta(days=1))
 
     def __str__(self):
         return f'{self.year:04d}{self.month:02d}'
@@ -178,12 +201,12 @@ class Prolabore:
             client=client,
             company_id=company_id,
             competence=Competence.from_data(data['competence']),
-            inss=data['iNSS'],
-            irpf=data['iRPJFolha'],
-            net_value=data['valorLiquido'],
+            inss=Decimal(str(data['iNSS'])),
+            irpf=Decimal(str(data['iRPJFolha'])),
+            net_value=Decimal(str(data['valorLiquido'])),
             partner_id=data['partner']['__identity'],
             paycheck_id=data['contraCheque']['__identity'],
-            total_value=data['valor'],
+            total_value=Decimal(str(data['valor'])),
         )
 
     def download(self):
