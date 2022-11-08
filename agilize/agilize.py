@@ -148,8 +148,8 @@ class Company:
 
 @define(hash=True)
 class Competence:
-    year: int
-    month: int
+    year: int = field(converter=int)
+    month: int = field(converter=int)
 
     @classmethod
     def from_data(cls, data):

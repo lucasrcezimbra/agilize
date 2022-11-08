@@ -1,6 +1,13 @@
 from agilize import Competence
 
 
+def test_init_convert():
+    competence = Competence('2022', '5')
+    assert isinstance(competence.year, int)
+    assert isinstance(competence.month, int)
+    assert Competence('2022', '5') == Competence(2022, 5)
+
+
 def test_from_data():
     c1 = Competence.from_data('2022-05-01')
     assert c1.year == 2022
