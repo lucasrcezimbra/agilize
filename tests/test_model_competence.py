@@ -54,3 +54,11 @@ def test_next():
     assert Competence(2022, 5).next == Competence(2022, 6)
     assert Competence(2022, 12).next == Competence(2023, 1)
     assert Competence(2022, 12).next.next == Competence(2023, 2)
+    assert Competence(2021, 1).next == Competence(2021, 2)
+
+
+def test_previous():
+    assert Competence(2022, 5).previous == Competence(2022, 4)
+    assert Competence(2022, 12).previous == Competence(2022, 11)
+    assert Competence(2022, 12).previous.previous == Competence(2022, 10)
+    assert Competence(2021, 1).previous == Competence(2020, 12)

@@ -175,6 +175,10 @@ class Competence:
     def next(self):
         return self.from_date(self.last_date + timedelta(days=1))
 
+    @property
+    def previous(self):
+        return self.from_date(self.first_date - timedelta(days=1))
+
     def __str__(self):
         return f'{self.year:04d}{self.month:02d}'
 
