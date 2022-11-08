@@ -1,6 +1,6 @@
 import calendar
 from collections import defaultdict
-from datetime import date
+from datetime import date, timedelta
 from decimal import Decimal
 from typing import Optional
 
@@ -170,6 +170,10 @@ class Competence:
     def last_date(self):
         _, last_day = calendar.monthrange(self.year, self.month)
         return date(self.year, self.month, last_day)
+
+    @property
+    def next(self):
+        return self.from_date(self.last_date + timedelta(days=1))
 
     def __str__(self):
         return f'{self.year:04d}{self.month:02d}'
