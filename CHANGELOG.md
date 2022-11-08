@@ -1,7 +1,7 @@
 # Changelog
 
 
-## (unreleased)
+## 0.0.7 (2022-11-08)
 - Fix Prolabore.from_data to cast values to Decimal
 - Improve Competence adding `previous`, `next`, `last_date`, `from_date`, `first_date`
 - Update dev requirements
