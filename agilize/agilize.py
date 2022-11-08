@@ -155,7 +155,11 @@ class Competence:
     @classmethod
     def from_data(cls, data):
         year, month, *_ = data.split('-')
-        return cls(year=int(year), month=int(month))
+        return cls(int(year), int(month))
+
+    @classmethod
+    def from_date(cls, date):
+        return cls(date.year, date.month)
 
     @property
     def first_date(self):

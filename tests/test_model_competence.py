@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, datetime
 
 from agilize import Competence
 
@@ -22,6 +22,12 @@ def test_from_data():
     c3 = Competence.from_data('2000-12-32')
     assert c3.year == 2000
     assert c3.month == 12
+
+
+def test_from_date():
+    assert Competence.from_date(date(2022, 11, 8)) == Competence(2022, 11)
+    assert Competence.from_date(datetime(2022, 10, 30)) == Competence(2022, 10)
+    assert Competence.from_date(datetime(2022, 9, 30, 8, 32)) == Competence(2022, 9)
 
 
 def test_str():
