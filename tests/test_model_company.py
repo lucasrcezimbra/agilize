@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from agilize import Company, Competence, Invoice, Prolabore, Tax
 
 
@@ -23,12 +25,12 @@ def test_prolabores(company, prolabores_data):
         client=company.client,
         company_id=company.id,
         competence=Competence.from_data(data['competence']),
-        inss=data['iNSS'],
-        irpf=data['iRPJFolha'],
-        net_value=data['valorLiquido'],
+        inss=Decimal(str(data['iNSS'])),
+        irpf=Decimal(str(data['iRPJFolha'])),
+        net_value=Decimal(str(data['valorLiquido'])),
         partner_id=data['partner']['__identity'],
         paycheck_id=data['contraCheque']['__identity'],
-        total_value=data['valor'],
+        total_value=Decimal(str(data['valor'])),
     )
 
 

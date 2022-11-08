@@ -1,3 +1,4 @@
+from decimal import Decimal
 from uuid import uuid4
 
 import pytest
@@ -30,10 +31,10 @@ def test_from_data(prolabores_data):
     assert prolabore.client == client
     assert prolabore.company_id == company_id
     assert prolabore.competence == Competence.from_data(data['competence'])
-    assert prolabore.inss == data['iNSS']
-    assert prolabore.irpf == data['iRPJFolha']
-    assert prolabore.net_value == data['valorLiquido']
-    assert prolabore.total_value == data['valor']
+    assert prolabore.inss == Decimal(str(data['iNSS']))
+    assert prolabore.irpf == Decimal(str(data['iRPJFolha']))
+    assert prolabore.net_value == Decimal(str(data['valorLiquido']))
+    assert prolabore.total_value == Decimal(str(data['valor']))
     assert prolabore.paycheck_id == data['contraCheque']['__identity']
 
 
