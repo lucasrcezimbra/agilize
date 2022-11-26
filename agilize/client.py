@@ -118,7 +118,7 @@ class Client(AnonymousClient):
     def upload_nfse(self, company_id, filebytes):
         response = requests.post(
             url=self.url(self.PATH_UPLOAD_NFSE, company_id=company_id),
-            files={'resources[0]': filebytes},
+            files={'resources[0]': ('whatever.xml', filebytes, 'text/xml')},
             headers=self.headers,
         )
         response2 = requests.post(

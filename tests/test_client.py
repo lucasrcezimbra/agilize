@@ -219,7 +219,7 @@ def test_upload_invoice(client, faker):
         json={'__identity': file_identity},
         match=[
             matchers.header_matcher({"Authorization": f"Bearer {client.access_token}"}),
-            matchers.multipart_matcher({'resources[0]': file}),
+            matchers.multipart_matcher({'resources[0]': ('whatever.xml', file, 'text/xml')}),
         ],
     )
     responses.add(
