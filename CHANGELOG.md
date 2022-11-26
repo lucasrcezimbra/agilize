@@ -1,6 +1,12 @@
 # Changelog
 
 
+## 0.0.8 (2022-11-26)
+- Fix upload_nfse
+- Fix pre-commit
+- Update dev requirements
+
+
 ## 0.0.7 (2022-11-08)
 - Add Action to publish on PyPI [#1](https://github.com/lucasrcezimbra/agilize/issues/1)
 - Fix Prolabore.from_data to cast values to Decimal
