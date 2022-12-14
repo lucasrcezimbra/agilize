@@ -504,3 +504,63 @@ def invoices_data(faker):
             'total': faker.money(),
         },
     ]
+
+
+@pytest.fixture
+def invoice_payment_data(faker):
+    amount = faker.money()
+    barcode = faker.pystr_format("###############################################")
+    return {
+            "closingDate": "2022-12-10T04:00:00-0300",
+            "code": "{CNPJ}-122022",
+            "competence": "2022-12-01T00:00:00-0300",
+            "deadline": "2022-12-15T23:59:59-0300",
+            "entries": [
+                {
+                    "amount": amount,
+                    "amountComDesconto": None,
+                    "description": "Mensalidade da Agilize relativa à competência...",
+                    "isNegative": faker.pybool(),
+                    "keyInvoiceEntry": f"{uuid4()}_mensalidade",
+                    "mensalidade": faker.pybool(),
+                    "type": 0,
+                    "weight": -1,
+                    "__identity": str(uuid4()),
+                },
+            ],
+            "overdue": faker.pybool(),
+            "paidPaymentOrder": None,
+            "paymentDate": None,
+            "paymentOrders": [
+                {
+                    "qrCode": faker.url(),
+                    "qrCodeCopyPaste": faker.pystr(),
+                    "__identity": str(uuid4()),
+                },
+                {
+                    "billet": {
+                        "barcode": barcode,
+                        "chargeTotal": amount,
+                        "isExpired": faker.pybool(),
+                        "url": f"https://faturas.iugu.com/{uuid4()}.pdf",
+                        "__identity": str(uuid4()),
+                    },
+                    "__identity": str(uuid4()),
+                },
+            ],
+            "status": 1,
+            "total": amount,
+            "validBilletPaymentOrder": {
+                "billet": {
+                    "barcode": barcode,
+                    "chargeTotal": amount,
+                    "isExpired": faker.pybool(),
+                    "url": f"https://faturas.iugu.com/{uuid4()}.pdf",
+                    "__identity": str(uuid4()),
+                },
+                "createdAt": "2022-12-10T04:21:45-0300",
+                "isReadyForPayment": faker.pybool(),
+                "__identity": str(uuid4()),
+            },
+            "__identity": str(uuid4()),
+        }

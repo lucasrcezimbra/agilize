@@ -215,3 +215,19 @@ def test_upload_invoice(client, faker):
     )
 
     assert client.upload_nfse(company_id, file) == expected_response
+
+
+@responses.activate
+def test_invoice_payment(client, invoice_payment_data):
+    company_id, invoice_id = uuid4(), uuid4()
+
+    responses.add(
+        responses.GET,
+        URL.INVOICE_PAYMENT.format(company_id=company_id, invoice_id=invoice_id),
+        json=invoice_payment_data,
+        match=[
+            matchers.header_matcher({"Authorization": f"Bearer {client.access_token}"})
+        ],
+    )
+
+    assert client.invoice_payment(company_id, invoice_id) == invoice_payment_data

@@ -10,6 +10,7 @@ class URL:
     DOWNLOAD_TAX = BASE + 'companies/{company_id}/taxes/{tax_id}/billet'
     INFO = BASE + 'companies/security-user/info'
     INVOICES = BASE + 'companies/{company_id}/invoices'
+    INVOICE_PAYMENT = BASE + 'companies/{company_id}/invoices/{invoice_id}/dopayment'
     PARTNERS = BASE + 'companies/{company_id}/partners'
     PROLABORE = BASE + 'companies/{company_id}/prolabore-anual'
     TAXES = BASE + 'companies/{company_id}/taxes'
@@ -114,6 +115,13 @@ class Client(AnonymousClient):
                 'page': 1,
                 'year': year,
             },
+            headers=self.headers,
+        )
+        return response.json()
+
+    def invoice_payment(self, company_id, invoice_id):
+        response = requests.get(
+            url=URL.INVOICE_PAYMENT.format(company_id=company_id, invoice_id=invoice_id),
             headers=self.headers,
         )
         return response.json()
