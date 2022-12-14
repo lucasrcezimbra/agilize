@@ -52,3 +52,28 @@ def test_download_nfse(invoice, mocker):
     invoice.download_nfse()
 
     anonymous_client_mock.download.assert_called_once_with(invoice.url_nfse_image)
+
+
+def test_barcode_call_client(invoice):
+    invoice.barcode
+
+    invoice.client.invoice_payment.assert_called_once_with(
+        invoice.company_id,
+        invoice.id,
+    )
+
+
+def test_barcode_cache(invoice):
+    invoice.barcode
+    invoice.barcode
+
+    invoice.client.invoice_payment.assert_called_once_with(
+        invoice.company_id,
+        invoice.id,
+    )
+
+
+def test_barcode_value(invoice, invoice_payment_data):
+    invoice.client.invoice_payment.return_value = invoice_payment_data
+
+    assert invoice.barcode == invoice_payment_data['validBilletPaymentOrder']['billet']['barcode']

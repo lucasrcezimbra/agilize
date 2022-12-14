@@ -251,6 +251,7 @@ class Invoice:
     id: str
     url_nfse: str
     client: Client
+    _barcode: Optional[str] = None
 
     @classmethod
     def from_data(cls, data, company_id, client):
@@ -263,6 +264,13 @@ class Invoice:
             id=data['__identity'],
             url_nfse=data['nfses'][0]['nfseUrl'],
         )
+
+    @property
+    def barcode(self):
+        if not self._barcode:
+            data = self.client.invoice_payment(self.company_id, self.id)
+            self._barcode = data['validBilletPaymentOrder']['billet']['barcode']
+        return self._barcode
 
     @property
     def url_nfse_image(self):
