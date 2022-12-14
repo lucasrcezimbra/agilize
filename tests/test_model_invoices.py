@@ -44,7 +44,10 @@ class TestFetch:
 
         invoices.fetch(2022)
 
-        assert list(invoices) == [Invoice.from_data(d) for d in invoices_data]
+        assert list(invoices) == [
+            Invoice.from_data(d, invoices.company_id, invoices.client)
+            for d in invoices_data
+        ]
 
     def test_ignore_invoices_without_nfse(self, invoices, invoices_data):
         data = [{**invoices_data[0], 'nfses': []}]
@@ -63,7 +66,9 @@ class TestGet:
         invoices.client.invoices.return_value = [data, another_data]
         competence = Competence.from_data(data['competence'])
 
-        assert invoices.get(competence) == Invoice.from_data(data)
+        assert invoices.get(competence) == Invoice.from_data(
+            data, invoices.company_id, invoices.client
+        )
 
     def test_call_client(self, invoices, invoices_data):
         invoices.client.invoices.return_value = invoices_data
