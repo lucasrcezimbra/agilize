@@ -5,6 +5,7 @@ import responses
 from responses import matchers
 
 from agilize import Client
+from agilize.client import URL
 from agilize.keycloak import Keycloak
 
 
@@ -42,23 +43,11 @@ def test_cache_access_token(client):
     client.keycloak.token.assert_not_called()
 
 
-def test_url():
-    assert Client.url(Client.PATH_INFO) == (Client.URL_API + Client.PATH_INFO)
-
-
-def test_url_with_params():
-    company_id = uuid4()
-
-    url = Client.url(Client.PATH_PROLABORE, company_id=company_id)
-
-    assert url == (Client.URL_API + f'companies/{company_id}/prolabore-anual')
-
-
 @responses.activate
 def test_info(client, info_data):
     responses.add(
         responses.GET,
-        client.url(Client.PATH_INFO),
+        URL.INFO,
         json=info_data,
         match=[
             matchers.header_matcher({"Authorization": f"Bearer {client.access_token}"})
@@ -70,12 +59,12 @@ def test_info(client, info_data):
 
 @responses.activate
 def test_cache_info(client, info_data):
-    responses.add(responses.GET, client.url(Client.PATH_INFO), json=info_data)
+    responses.add(responses.GET, URL.INFO, json=info_data)
 
     client.info
     client.info
 
-    responses.assert_call_count(client.url(Client.PATH_INFO), 1)
+    responses.assert_call_count(URL.INFO, 1)
 
 
 @responses.activate
@@ -84,7 +73,7 @@ def test_prolabores(client, prolabores_data):
 
     responses.add(
         responses.GET,
-        client.url(Client.PATH_PROLABORE, company_id=company_id),
+        URL.PROLABORE.format(company_id=company_id),
         json=prolabores_data,
         match=[
             matchers.query_string_matcher(f'anoReferencia={year}-01-01T00:00:00P'),
@@ -100,11 +89,9 @@ def test_download_prolabore(client, prolabores_data):
     company_id, partner_id, year, month = uuid4(), uuid4(), 2022, 3
     file = b''
 
-    url = Client.url(Client.PATH_DOWNLOAD_PROLABORE, company_id=company_id)
-
     responses.add(
         responses.GET,
-        url,
+        URL.DOWNLOAD_PROLABORE.format(company_id=company_id),
         body=file,
         match=[
             matchers.query_string_matcher(
@@ -123,7 +110,7 @@ def test_partners(client, partners_data):
 
     responses.add(
         responses.GET,
-        client.url(Client.PATH_PARTNERS, company_id=company_id),
+        URL.PARTNERS.format(company_id=company_id),
         json=partners_data,
         match=[
             matchers.header_matcher({"Authorization": f"Bearer {client.access_token}"})
@@ -139,7 +126,7 @@ def test_taxes(client, taxes_data):
 
     responses.add(
         responses.GET,
-        client.url(Client.PATH_TAXES, company_id=company_id),
+        URL.TAXES.format(company_id=company_id),
         json=taxes_data,
         match=[
             matchers.query_param_matcher(
@@ -167,7 +154,7 @@ def test_invoices(client, invoices_data):
 
     responses.add(
         responses.GET,
-        client.url(Client.PATH_INVOICES, company_id=company_id),
+        URL.INVOICES.format(company_id=company_id),
         json=invoices_data,
         match=[
             matchers.query_param_matcher({'count': 3000, 'page': 1, 'year': year}),
@@ -184,11 +171,9 @@ def test_download_tax(client, faker, prolabores_data):
     file_url = faker.url()
     file = b''
 
-    url = Client.url(Client.PATH_DOWNLOAD_TAX, company_id=company_id, tax_id=tax_id)
-
     responses.add(
         responses.GET,
-        url,
+        URL.DOWNLOAD_TAX.format(company_id=company_id, tax_id=tax_id),
         json={'url': file_url},
         match=[
             matchers.header_matcher({"Authorization": f"Bearer {client.access_token}"})
@@ -210,12 +195,9 @@ def test_upload_invoice(client, faker):
         'nfses': [],
     }
 
-    url1 = Client.url(Client.PATH_UPLOAD_NFSE, company_id=company_id)
-    url2 = Client.url(Client.PATH_UPLOAD_NFSE2, company_id=company_id)
-
     responses.add(
         responses.POST,
-        url1,
+        URL.UPLOAD_NFSE.format(company_id=company_id),
         json={'__identity': file_identity},
         match=[
             matchers.header_matcher({"Authorization": f"Bearer {client.access_token}"}),
@@ -224,7 +206,7 @@ def test_upload_invoice(client, faker):
     )
     responses.add(
         responses.POST,
-        url2,
+        URL.UPLOAD_NFSE2.format(company_id=company_id),
         json=expected_response,
         match=[
             matchers.header_matcher({"Authorization": f"Bearer {client.access_token}"}),

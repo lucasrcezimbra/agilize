@@ -3,6 +3,20 @@ import requests
 from agilize.keycloak import Keycloak
 
 
+class URL:
+    BASE = 'https://app.agilize.com.br/api/v1/'
+
+    DOWNLOAD_PROLABORE = BASE + 'companies/{company_id}/prolabore-anual/download'
+    DOWNLOAD_TAX = BASE + 'companies/{company_id}/taxes/{tax_id}/billet'
+    INFO = BASE + 'companies/security-user/info'
+    INVOICES = BASE + 'companies/{company_id}/invoices'
+    PARTNERS = BASE + 'companies/{company_id}/partners'
+    PROLABORE = BASE + 'companies/{company_id}/prolabore-anual'
+    TAXES = BASE + 'companies/{company_id}/taxes'
+    UPLOAD_NFSE = BASE + 'companies/{company_id}/nfseimportresources'
+    UPLOAD_NFSE2 = BASE + 'companies/{company_id}/nfses/importfromresource'
+
+
 class AnonymousClient:
     @staticmethod
     def download(url):
@@ -13,17 +27,6 @@ class Client(AnonymousClient):
     AUTH_URL = 'https://sso.agilize.com.br/auth/'
     CLIENT_ID = 'agilize-legacy-client'
     REALM_NAME = 'AgilizeAPPs'
-
-    URL_API = 'https://app.agilize.com.br/api/v1/'
-    PATH_DOWNLOAD_PROLABORE = 'companies/{company_id}/prolabore-anual/download'
-    PATH_DOWNLOAD_TAX = 'companies/{company_id}/taxes/{tax_id}/billet'
-    PATH_INFO = 'companies/security-user/info'
-    PATH_INVOICES = 'companies/{company_id}/invoices'
-    PATH_PARTNERS = 'companies/{company_id}/partners'
-    PATH_PROLABORE = 'companies/{company_id}/prolabore-anual'
-    PATH_TAXES = 'companies/{company_id}/taxes'
-    PATH_UPLOAD_NFSE = 'companies/{company_id}/nfseimportresources'
-    PATH_UPLOAD_NFSE2 = 'companies/{company_id}/nfses/importfromresource'
 
     def __init__(self, username, password, keycloak=None):
         self.username = username
@@ -43,7 +46,7 @@ class Client(AnonymousClient):
     def info(self):
         if not self._info:
             response = requests.get(
-                url=self.url(self.PATH_INFO),
+                url=URL.INFO,
                 headers=self.headers,
             )
             self._info = response.json()
@@ -55,14 +58,14 @@ class Client(AnonymousClient):
 
     def partners(self, company_id):
         response = requests.get(
-            url=self.url(self.PATH_PARTNERS, company_id=company_id),
+            url=URL.PARTNERS.format(company_id=company_id),
             headers=self.headers,
         )
         return response.json()
 
     def prolabores(self, company_id, year):
         response = requests.get(
-            url=self.url(self.PATH_PROLABORE, company_id=company_id),
+            url=URL.PROLABORE.format(company_id=company_id),
             params={'anoReferencia': f'{year}-01-01T00:00:00P'},
             headers=self.headers,
         )
@@ -70,7 +73,7 @@ class Client(AnonymousClient):
 
     def download_prolabore(self, company_id, partner_id, year, month):
         response = requests.get(
-            url=self.url(self.PATH_DOWNLOAD_PROLABORE, company_id=company_id),
+            url=URL.DOWNLOAD_PROLABORE.format(company_id=company_id),
             params={
                 'competence': f'{year}-{month}-01T00:00:00-0300',
                 'partner': partner_id,
@@ -81,7 +84,7 @@ class Client(AnonymousClient):
 
     def taxes(self, company_id, year):
         response = requests.get(
-            url=self.url(self.PATH_TAXES, company_id=company_id),
+            url=URL.TAXES.format(company_id=company_id),
             params={
                 'blocking': True,
                 'closed': True,
@@ -98,14 +101,14 @@ class Client(AnonymousClient):
 
     def download_tax(self, company_id, tax_id):
         response = requests.get(
-            url=self.url(self.PATH_DOWNLOAD_TAX, company_id=company_id, tax_id=tax_id),
+            url=URL.DOWNLOAD_TAX.format(company_id=company_id, tax_id=tax_id),
             headers=self.headers,
         )
         return self.download(response.json()['url'])
 
     def invoices(self, company_id, year):
         response = requests.get(
-            url=self.url(self.PATH_INVOICES, company_id=company_id),
+            url=URL.INVOICES.format(company_id=company_id),
             params={
                 'count': 3000,
                 'page': 1,
@@ -117,17 +120,13 @@ class Client(AnonymousClient):
 
     def upload_nfse(self, company_id, filebytes):
         response = requests.post(
-            url=self.url(self.PATH_UPLOAD_NFSE, company_id=company_id),
+            url=URL.UPLOAD_NFSE.format(company_id=company_id),
             files={'resources[0]': ('whatever.xml', filebytes, 'text/xml')},
             headers=self.headers,
         )
         response2 = requests.post(
-            url=self.url(self.PATH_UPLOAD_NFSE2, company_id=company_id),
+            url=URL.UPLOAD_NFSE2.format(company_id=company_id),
             json={'nfseImportResource': response.json()['__identity']},
             headers=self.headers,
         )
         return response2.json()
-
-    @classmethod
-    def url(cls, path, **kwargs):
-        return cls.URL_API + path.format(**kwargs)
