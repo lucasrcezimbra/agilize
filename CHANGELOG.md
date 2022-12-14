@@ -1,6 +1,11 @@
 # Changelog
 
 
+## 0.0.9 (2022-12-14)
+- Add Invoice.barcode
+- Update dev requirements
+
+
 ## 0.0.8 (2022-11-26)
 - Fix upload_nfse
 - Fix pre-commit

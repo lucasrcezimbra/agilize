@@ -1,22 +1,37 @@
+from datetime import datetime
+from decimal import Decimal
+from uuid import uuid4
+
 import pytest
 
 from agilize import Competence, Invoice
+from agilize.agilize import DATETIME_FORMAT
 
 
 @pytest.fixture
-def invoice(faker):
+def invoice(faker, client_mock):
     return Invoice(
+        amount=faker.pydecimal(),
+        company_id=str(uuid4()),
         competence=Competence(faker.year(), faker.month()),
+        client=client_mock,
+        due_date=faker.date_object(),
+        id=str(uuid4()),
         url_nfse=faker.url(),
     )
 
 
 def test_from_data(invoices_data):
-    data = invoices_data[0]
+    client, company_id, data = object, str(uuid4()), invoices_data[0]
 
-    invoice = Invoice.from_data(data)
+    invoice = Invoice.from_data(data, company_id, client)
 
+    assert invoice.amount == Decimal(str(data['total']))
+    assert invoice.company_id == company_id
     assert invoice.competence == Competence.from_data(data['competence'])
+    assert invoice.client == client
+    assert invoice.due_date == datetime.strptime(data['deadline'], DATETIME_FORMAT).date()
+    assert invoice.id == data['__identity']
     assert invoice.url_nfse == data['nfses'][0]['nfseUrl']
 
 
@@ -37,3 +52,28 @@ def test_download_nfse(invoice, mocker):
     invoice.download_nfse()
 
     anonymous_client_mock.download.assert_called_once_with(invoice.url_nfse_image)
+
+
+def test_barcode_call_client(invoice):
+    invoice.barcode
+
+    invoice.client.invoice_payment.assert_called_once_with(
+        invoice.company_id,
+        invoice.id,
+    )
+
+
+def test_barcode_cache(invoice):
+    invoice.barcode
+    invoice.barcode
+
+    invoice.client.invoice_payment.assert_called_once_with(
+        invoice.company_id,
+        invoice.id,
+    )
+
+
+def test_barcode_value(invoice, invoice_payment_data):
+    invoice.client.invoice_payment.return_value = invoice_payment_data
+
+    assert invoice.barcode == invoice_payment_data['validBilletPaymentOrder']['billet']['barcode']

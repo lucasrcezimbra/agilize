@@ -1,12 +1,14 @@
 import calendar
 from collections import defaultdict
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
 from decimal import Decimal
 from typing import Optional
 
 from attrs import define, field
 
 from agilize.client import AnonymousClient, Client
+
+DATETIME_FORMAT = '%Y-%m-%dT%H:%M:%S%z'
 
 
 class Agilize:
@@ -99,7 +101,7 @@ class Invoices:
         for d in data:
             if not d['nfses']:
                 continue
-            invoice = Invoice.from_data(d)
+            invoice = Invoice.from_data(d, self.company_id, self.client)
             self._invoices[invoice.competence] = invoice
 
     def __iter__(self):
@@ -242,15 +244,33 @@ class Tax:
 
 @define
 class Invoice:
+    amount: Decimal
+    company_id: str
     competence: Competence
+    due_date: date
+    id: str
     url_nfse: str
+    client: Client
+    _barcode: Optional[str] = None
 
     @classmethod
-    def from_data(cls, data):
+    def from_data(cls, data, company_id, client):
         return cls(
+            amount=Decimal(str(data['total'])),
+            company_id=company_id,
             competence=Competence.from_data(data['competence']),
+            client=client,
+            due_date=datetime.strptime(data['deadline'], DATETIME_FORMAT).date(),
+            id=data['__identity'],
             url_nfse=data['nfses'][0]['nfseUrl'],
         )
+
+    @property
+    def barcode(self):
+        if not self._barcode:
+            data = self.client.invoice_payment(self.company_id, self.id)
+            self._barcode = data['validBilletPaymentOrder']['billet']['barcode']
+        return self._barcode
 
     @property
     def url_nfse_image(self):
