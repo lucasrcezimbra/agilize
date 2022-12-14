@@ -9,11 +9,12 @@ from agilize.agilize import DATETIME_FORMAT
 
 
 @pytest.fixture
-def invoice(faker):
+def invoice(faker, client_mock):
     return Invoice(
         amount=faker.pydecimal(),
+        company_id=str(uuid4()),
         competence=Competence(faker.year(), faker.month()),
-        client=object,
+        client=client_mock,
         due_date=faker.date_object(),
         id=str(uuid4()),
         url_nfse=faker.url(),
@@ -21,11 +22,12 @@ def invoice(faker):
 
 
 def test_from_data(invoices_data):
-    client, data = object, invoices_data[0]
+    client, company_id, data = object, str(uuid4()), invoices_data[0]
 
-    invoice = Invoice.from_data(data, client)
+    invoice = Invoice.from_data(data, company_id, client)
 
     assert invoice.amount == Decimal(str(data['total']))
+    assert invoice.company_id == company_id
     assert invoice.competence == Competence.from_data(data['competence'])
     assert invoice.client == client
     assert invoice.due_date == datetime.strptime(data['deadline'], DATETIME_FORMAT).date()

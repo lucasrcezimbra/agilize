@@ -101,7 +101,7 @@ class Invoices:
         for d in data:
             if not d['nfses']:
                 continue
-            invoice = Invoice.from_data(d, self.client)
+            invoice = Invoice.from_data(d, self.company_id, self.client)
             self._invoices[invoice.competence] = invoice
 
     def __iter__(self):
@@ -245,6 +245,7 @@ class Tax:
 @define
 class Invoice:
     amount: Decimal
+    company_id: str
     competence: Competence
     due_date: date
     id: str
@@ -252,9 +253,10 @@ class Invoice:
     client: Client
 
     @classmethod
-    def from_data(cls, data, client):
+    def from_data(cls, data, company_id, client):
         return cls(
             amount=Decimal(str(data['total'])),
+            company_id=company_id,
             competence=Competence.from_data(data['competence']),
             client=client,
             due_date=datetime.strptime(data['deadline'], DATETIME_FORMAT).date(),
