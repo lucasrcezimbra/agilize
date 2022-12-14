@@ -60,6 +60,7 @@ def test_invoices(company, invoices_data):
 
     assert invoice == Invoice(
         competence=competence,
+        id=data['__identity'],
         url_nfse=data['nfses'][0]['nfseUrl'],
     )
 

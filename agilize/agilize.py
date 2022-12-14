@@ -243,12 +243,14 @@ class Tax:
 @define
 class Invoice:
     competence: Competence
+    id: str
     url_nfse: str
 
     @classmethod
     def from_data(cls, data):
         return cls(
             competence=Competence.from_data(data['competence']),
+            id=data['__identity'],
             url_nfse=data['nfses'][0]['nfseUrl'],
         )
 

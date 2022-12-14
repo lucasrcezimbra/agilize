@@ -1,3 +1,5 @@
+from uuid import uuid4
+
 import pytest
 
 from agilize import Competence, Invoice
@@ -7,6 +9,7 @@ from agilize import Competence, Invoice
 def invoice(faker):
     return Invoice(
         competence=Competence(faker.year(), faker.month()),
+        id=str(uuid4()),
         url_nfse=faker.url(),
     )
 
@@ -17,6 +20,7 @@ def test_from_data(invoices_data):
     invoice = Invoice.from_data(data)
 
     assert invoice.competence == Competence.from_data(data['competence'])
+    assert invoice.id == data['__identity']
     assert invoice.url_nfse == data['nfses'][0]['nfseUrl']
 
 
