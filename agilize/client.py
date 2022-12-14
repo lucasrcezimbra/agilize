@@ -10,7 +10,7 @@ class URL:
     DOWNLOAD_TAX = BASE + 'companies/{company_id}/taxes/{tax_id}/billet'
     INFO = BASE + 'companies/security-user/info'
     INVOICES = BASE + 'companies/{company_id}/invoices'
-    INVOICE_PAYMENT = BASE + 'companies/{company_id}/invoices/{invoice_id}/dopayment'
+    INVOICE_PAYMENT = BASE + 'companies/{company_id}/invoices/{invoice_id}'
     PARTNERS = BASE + 'companies/{company_id}/partners'
     PROLABORE = BASE + 'companies/{company_id}/prolabore-anual'
     TAXES = BASE + 'companies/{company_id}/taxes'
