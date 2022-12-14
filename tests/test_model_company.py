@@ -58,11 +58,7 @@ def test_invoices(company, invoices_data):
 
     invoice = company.invoices.get(competence)
 
-    assert invoice == Invoice(
-        competence=competence,
-        id=data['__identity'],
-        url_nfse=data['nfses'][0]['nfseUrl'],
-    )
+    assert invoice == Invoice.from_data(data)
 
 
 def test_upload_nfse(company):

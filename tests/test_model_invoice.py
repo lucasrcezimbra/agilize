@@ -1,14 +1,19 @@
+from datetime import datetime
+from decimal import Decimal
 from uuid import uuid4
 
 import pytest
 
 from agilize import Competence, Invoice
+from agilize.agilize import DATETIME_FORMAT
 
 
 @pytest.fixture
 def invoice(faker):
     return Invoice(
+        amount=faker.pydecimal(),
         competence=Competence(faker.year(), faker.month()),
+        due_date=faker.date_object(),
         id=str(uuid4()),
         url_nfse=faker.url(),
     )
@@ -19,7 +24,9 @@ def test_from_data(invoices_data):
 
     invoice = Invoice.from_data(data)
 
+    assert invoice.amount == Decimal(str(data['total']))
     assert invoice.competence == Competence.from_data(data['competence'])
+    assert invoice.due_date == datetime.strptime(data['deadline'], DATETIME_FORMAT).date()
     assert invoice.id == data['__identity']
     assert invoice.url_nfse == data['nfses'][0]['nfseUrl']
 

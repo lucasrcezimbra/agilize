@@ -1,12 +1,14 @@
 import calendar
 from collections import defaultdict
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
 from decimal import Decimal
 from typing import Optional
 
 from attrs import define, field
 
 from agilize.client import AnonymousClient, Client
+
+DATETIME_FORMAT = '%Y-%m-%dT%H:%M:%S%z'
 
 
 class Agilize:
@@ -242,14 +244,18 @@ class Tax:
 
 @define
 class Invoice:
+    amount: Decimal
     competence: Competence
+    due_date: date
     id: str
     url_nfse: str
 
     @classmethod
     def from_data(cls, data):
         return cls(
+            amount=Decimal(str(data['total'])),
             competence=Competence.from_data(data['competence']),
+            due_date=datetime.strptime(data['deadline'], DATETIME_FORMAT).date(),
             id=data['__identity'],
             url_nfse=data['nfses'][0]['nfseUrl'],
         )
