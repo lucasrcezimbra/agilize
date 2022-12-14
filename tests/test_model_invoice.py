@@ -13,6 +13,7 @@ def invoice(faker):
     return Invoice(
         amount=faker.pydecimal(),
         competence=Competence(faker.year(), faker.month()),
+        client=object,
         due_date=faker.date_object(),
         id=str(uuid4()),
         url_nfse=faker.url(),
@@ -20,12 +21,13 @@ def invoice(faker):
 
 
 def test_from_data(invoices_data):
-    data = invoices_data[0]
+    client, data = object, invoices_data[0]
 
-    invoice = Invoice.from_data(data)
+    invoice = Invoice.from_data(data, client)
 
     assert invoice.amount == Decimal(str(data['total']))
     assert invoice.competence == Competence.from_data(data['competence'])
+    assert invoice.client == client
     assert invoice.due_date == datetime.strptime(data['deadline'], DATETIME_FORMAT).date()
     assert invoice.id == data['__identity']
     assert invoice.url_nfse == data['nfses'][0]['nfseUrl']

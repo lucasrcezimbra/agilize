@@ -58,7 +58,7 @@ def test_invoices(company, invoices_data):
 
     invoice = company.invoices.get(competence)
 
-    assert invoice == Invoice.from_data(data)
+    assert invoice == Invoice.from_data(data, company.client)
 
 
 def test_upload_nfse(company):
