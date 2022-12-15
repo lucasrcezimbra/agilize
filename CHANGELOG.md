@@ -1,6 +1,10 @@
 # Changelog
 
 
+## 0.0.10 (2022-12-14)
+- Add Tax.amount and Tax.due_date
+
+
 ## 0.0.9 (2022-12-14)
 - Add Invoice.barcode
 - Update dev requirements
