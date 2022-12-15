@@ -42,13 +42,7 @@ def test_taxes(company, taxes_data):
     tax = company.taxes.get(abbreviation, competence)
 
     data = taxes_data[0]
-    assert tax == Tax(
-        abbreviation=data['taxAbbreviation'],
-        client=company.client,
-        company_id=company.id,
-        competence=Competence.from_data(data['competence']),
-        id=data['__identity'],
-    )
+    assert tax == Tax.from_data(data, company.id, company.client)
 
 
 def test_invoices(company, invoices_data):

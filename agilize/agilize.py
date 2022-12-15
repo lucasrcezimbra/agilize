@@ -222,19 +222,23 @@ class Prolabore:
 
 @define
 class Tax:
-    client: Client
     abbreviation: str
+    amount: Decimal
+    client: Client
     company_id: str
     competence: Competence
+    due_date: date
     id: str
 
     @classmethod
     def from_data(cls, data, company_id, client):
         return cls(
             abbreviation=data['taxAbbreviation'],
+            amount=Decimal(str(data['total'])),
             client=client,
             company_id=company_id,
             competence=Competence.from_data(data['competence']),
+            due_date=datetime.strptime(data['deadline'], DATETIME_FORMAT).date(),
             id=data['__identity'],
         )
 
