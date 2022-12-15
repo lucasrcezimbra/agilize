@@ -9,7 +9,7 @@ if __name__ == "__main__":
     setup(
         name='Agilize',
         description='Unofficial client to access Agilize',
-        version='0.0.9',
+        version='0.0.10',
         long_description=open(README).read(),
         long_description_content_type='text/markdown',
         author="Lucas Rangel Cezimbra",
