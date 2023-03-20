@@ -1,5 +1,5 @@
 coveralls==3.3.1
-faker==16.6.1
+faker==18.2.0
 gitchangelog==3.0.4
 pre-commit==3.0.2
 pytest==7.2.1
