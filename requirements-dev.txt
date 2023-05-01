@@ -1,7 +1,7 @@
 coveralls==3.3.1
 faker==16.6.1
 gitchangelog==3.0.4
-pre-commit==3.0.2
+pre-commit==3.3.0
 pytest==7.2.1
 pytest-cov==4.0.0
 pytest-mock==3.10.0
